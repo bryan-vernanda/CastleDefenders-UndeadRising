@@ -8,6 +8,7 @@
 import UIKit
 import SceneKit
 import ARKit
+import GameplayKit
 
 class ViewController: UIViewController, ARSCNViewDelegate {
 
@@ -15,6 +16,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     private var spawnTimer: DispatchSourceTimer?
     private var currentZPosition: Float = -5
+    private let randomSource = GKRandomSource()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,18 +71,12 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             guard let self = self else { return }
             
             DispatchQueue.main.async {
-                print("Spawning zombie at z position: \(self.currentZPosition)")
-                // Spawn a zombie at the current z position
-                self.spawnZombie(at: SCNVector3(x: 0, y: 0, z: self.currentZPosition), for: parentNode)
+                // Generate a random x position between -5 and 5
+                let randomXPosition = Float(self.randomSource.nextInt(upperBound: 11)) - 5.0
+                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
                 
-                // Increase the z position for the next spawn
-                self.currentZPosition += 1
-                
-                // Optional: Stop spawning after a certain number of zombies
-                if self.currentZPosition > -1 {
-                    self.spawnTimer?.cancel()
-                    self.spawnTimer = nil
-                }
+                // Spawn a zombie at the current position
+                self.spawnZombie(at: SCNVector3(x: randomXPosition, y: 0, z: self.currentZPosition), for: parentNode)
             }
         }
         spawnTimer?.resume()
