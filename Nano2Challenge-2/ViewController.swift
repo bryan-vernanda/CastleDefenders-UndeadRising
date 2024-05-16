@@ -10,13 +10,19 @@ import SceneKit
 import ARKit
 import GameplayKit
 
-class ViewController: UIViewController, ARSCNViewDelegate {
+enum CollisionTypes: Int {
+    case zombie = 1
+    case castle = 2
+}
+
+class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     
     private var spawnTimer: DispatchSourceTimer?
     private var currentZPosition: Float = -5
     private let randomSource = GKRandomSource()
+    private var limitZombies = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +32,23 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         // Show statistics such as fps and timing information
         sceneView.showsStatistics = true
+        
+        // Show world anchor
+        sceneView.debugOptions = .showWorldOrigin
+        
+        sceneView.scene.physicsWorld.contactDelegate = self
+    }
+    
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
+//            print("Zombie hit the castle!")
+            contact.nodeB.removeFromParentNode()
+            print("node B removed")
+        } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) {
+//            print("Zombie hit the castle!")
+            contact.nodeA.removeFromParentNode()
+            print("node A removed")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,6 +81,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         if anchor.name == "zombieAnchor" {
+            // Add the castle to the scene
+            addCastle(for: node)
+            
             // Start spawning zombies at regular intervals
             startSpawningZombies(for: node)
         }
@@ -73,30 +99,56 @@ class ViewController: UIViewController, ARSCNViewDelegate {
             DispatchQueue.main.async {
                 // Generate a random x position between -5 and 5
                 let randomXPosition = Float(self.randomSource.nextInt(upperBound: 11)) - 5.0
-                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
+//                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
                 
-                // Spawn a zombie at the current position
-                self.spawnZombie(at: SCNVector3(x: randomXPosition, y: 0, z: self.currentZPosition), for: parentNode)
+                // Spawn a zombie at the current position & limit the zombies
+                if self.limitZombies < 5 {
+                    print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
+                    self.spawnZombie(at: SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition), for: parentNode)
+                    self.limitZombies += 1
+                }
             }
         }
         spawnTimer?.resume()
     }
     
     func spawnZombie(at position: SCNVector3, for parentNode: SCNNode) {
-        // Load the zombie scene
-        let zombieScene = SCNScene(named: "art.scnassets/Zombie.scn")!
-        if let zombieNode = zombieScene.rootNode.childNode(withName: "scene", recursively: true) {
-            // Set the position of the zombie
-            zombieNode.position = position
-            
-            // Add the zombieNode to the parent node
-            parentNode.addChildNode(zombieNode)
-            
-            // Optionally, add an action to move the zombie
-            let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: 0, z: -0.5), duration: 10.0)
-            zombieNode.runAction(moveAction)
-        }
+        let zombie = Zombie(at: position)
+        parentNode.addChildNode(zombie)
     }
+    
+    func addCastle(for parentNode: SCNNode) {
+        let castle = Castle()
+        parentNode.addChildNode(castle)
+    }
+    
+//    func spawnZombie(at position: SCNVector3, for parentNode: SCNNode) {
+//        // Load the zombie scene
+//        let zombieScene = SCNScene(named: "art.scnassets/Zombie.scn")!
+//        if let zombieNode = zombieScene.rootNode.childNode(withName: "scene", recursively: true) {
+//            // Set the position of the zombie
+//            zombieNode.position = position
+//            
+//            // Add the zombieNode to the parent node
+//            parentNode.addChildNode(zombieNode)
+//            
+//            // Optionally, add an action to move the zombie
+//            let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: -0.5, z: 0.6), duration: 10.0)
+//            zombieNode.runAction(moveAction)
+//        }
+//    }
+//    
+//    func addCastle(for parentNode: SCNNode) {
+//        let castleScene = SCNScene(named: "art.scnassets/SmallCastle.scn")!
+//        if let castleNode = castleScene.rootNode.childNode(withName: "scene", recursively: true) {
+//            // Set the position of the castle
+//            castleNode.position = SCNVector3(x: 0, y: -0.5, z: 0.5)
+//            
+//            // Add the castleNode to the parent node
+//            parentNode.addChildNode(castleNode)
+//            
+//        }
+//    }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
