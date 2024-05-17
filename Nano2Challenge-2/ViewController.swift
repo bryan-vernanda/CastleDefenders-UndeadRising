@@ -40,7 +40,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         sceneView.showsStatistics = true
         
         // Show world anchor
-        sceneView.debugOptions = .showWorldOrigin
+//        sceneView.debugOptions = .showBoundingBoxes
         
         sceneView.scene.physicsWorld.contactDelegate = self
     }
@@ -55,6 +55,15 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             contact.nodeA.removeFromParentNode()
 //            print("node A removed")
         }
+        
+        if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
+//            handleZombieHit(contact: contact.nodeB)
+            contact.nodeB.removeFromParentNode()
+        } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) {
+//            handleZombieHit(contact: contact.nodeA)
+            contact.nodeA.removeFromParentNode()
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -145,33 +154,22 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         parentNode.addChildNode(castle)
     }
     
-//    func attackBowButton(for parentNode: SCNNode) {
-//        let arrow = Arrow()
-//        parentNode.addChildNode(arrow)
-//    }
-    
     func attackBowButton(for parentNode: SCNNode) {
         guard let currentFrame = sceneView.session.currentFrame else { return }
-        
-        let arrow = Arrow()
         
         // Get the camera transform
         let cameraTransform = currentFrame.camera.transform
         let cameraPosition = SCNVector3(cameraTransform.columns.3.x, cameraTransform.columns.3.y, cameraTransform.columns.3.z)
         
-        // Set the arrow's position to the camera's position
-        arrow.position = cameraPosition
-        
         // Set the arrow's orientation to match the camera's orientation
         let cameraOrientation = SCNVector3(-cameraTransform.columns.2.x, -cameraTransform.columns.2.y, -cameraTransform.columns.2.z)
+        
+        // send the camera position and orientation to the arrow to be launched
+        let arrow = Arrow(at: cameraPosition, at: cameraOrientation)
         arrow.look(at: SCNVector3(cameraPosition.x + cameraOrientation.x, cameraPosition.y + cameraOrientation.y, cameraPosition.z + cameraOrientation.z))
         
         // Add the arrow to the scene
         parentNode.addChildNode(arrow)
-        
-        // Apply an impulse to the arrow to simulate launch
-        let force = SCNVector3(cameraOrientation.x * 10, cameraOrientation.y * 10, cameraOrientation.z * 10)
-        arrow.physicsBody?.applyForce(force, asImpulse: true)
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {

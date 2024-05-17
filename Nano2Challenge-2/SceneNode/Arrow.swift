@@ -9,12 +9,12 @@ import Foundation
 import SceneKit
 
 class Arrow: SCNNode{
-    override init() {
+    init(at position: SCNVector3, at cameraOrientation: SCNVector3) {
         super.init()
         
         let arrowScene = SCNScene(named: "art.scnassets/Arrow.scn")!
         
-//        self.position = SCNVector3(x: 0, y: 0, z: 0)
+        self.position = position
         
         self.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(node: self, options: nil))
         self.physicsBody?.isAffectedByGravity = true
@@ -25,8 +25,9 @@ class Arrow: SCNNode{
         if let arrowNode = arrowScene.rootNode.childNode(withName: "scene", recursively: true) {
             self.addChildNode(arrowNode)
             
-//            let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: 0, z: -10), duration: 3)
-//            self.runAction(moveAction)
+            // Apply an impulse to the arrow to simulate launch
+            let force = SCNVector3(cameraOrientation.x * 20, cameraOrientation.y * 20, cameraOrientation.z * 20)
+            self.physicsBody?.applyForce(force, asImpulse: true)
         }
     }
     
