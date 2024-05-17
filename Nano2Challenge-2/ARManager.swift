@@ -7,6 +7,11 @@
 
 import Foundation
 import ARKit
+import Combine
+
+enum ARAction {
+    case attackButton
+}
 
 class ARManager {
     static let shared = ARManager()
@@ -16,4 +21,5 @@ class ARManager {
     }
     
     let sceneView: ARSCNView
+    var actionStream = PassthroughSubject<ARAction, Never>()
 }

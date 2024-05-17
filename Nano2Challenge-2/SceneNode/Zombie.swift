@@ -18,7 +18,7 @@ class Zombie: SCNNode{
         
         self.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: self, options: nil))
         self.physicsBody?.categoryBitMask = CollisionTypes.zombie.rawValue
-        self.physicsBody?.contactTestBitMask = CollisionTypes.castle.rawValue
+        self.physicsBody?.contactTestBitMask = CollisionTypes.castle.rawValue | CollisionTypes.arrow.rawValue
         
         if let zombieNode = zombieScene.rootNode.childNode(withName: "scene", recursively: true) {
             self.addChildNode(zombieNode)

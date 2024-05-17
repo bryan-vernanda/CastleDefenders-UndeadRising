@@ -9,10 +9,12 @@ import UIKit
 import SceneKit
 import ARKit
 import GameplayKit
+import Combine
 
 enum CollisionTypes: Int {
     case zombie = 1
     case castle = 2
+    case arrow = 4
 }
 
 class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDelegate, ObservableObject {
@@ -90,7 +92,24 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             
             // Start spawning zombies at regular intervals
             startSpawningZombies(for: node)
+            
+            // Attack button
+            subscribeToActionStream(for: node)
         }
+    }
+    
+    private var cancellable: Set<AnyCancellable> = []
+    
+    func subscribeToActionStream(for node: SCNNode) {
+        ARManager.shared
+            .actionStream
+            .sink { [weak self] action in //to make sure no app crashing or memory leaks, use weak self
+                switch action {
+                    case .attackButton:
+                        self?.attackBowButton(for: node)
+                }
+            }//this is a subscribe, so customARView get inform whenever contentview sends an ARAction
+            .store(in: &cancellable)
     }
     
     private func startSpawningZombies(for parentNode: SCNNode) {
@@ -126,33 +145,34 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         parentNode.addChildNode(castle)
     }
     
-//    func spawnZombie(at position: SCNVector3, for parentNode: SCNNode) {
-//        // Load the zombie scene
-//        let zombieScene = SCNScene(named: "art.scnassets/Zombie.scn")!
-//        if let zombieNode = zombieScene.rootNode.childNode(withName: "scene", recursively: true) {
-//            // Set the position of the zombie
-//            zombieNode.position = position
-//            
-//            // Add the zombieNode to the parent node
-//            parentNode.addChildNode(zombieNode)
-//            
-//            // Optionally, add an action to move the zombie
-//            let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: -0.5, z: 0.6), duration: 10.0)
-//            zombieNode.runAction(moveAction)
-//        }
+//    func attackBowButton(for parentNode: SCNNode) {
+//        let arrow = Arrow()
+//        parentNode.addChildNode(arrow)
 //    }
-//    
-//    func addCastle(for parentNode: SCNNode) {
-//        let castleScene = SCNScene(named: "art.scnassets/SmallCastle.scn")!
-//        if let castleNode = castleScene.rootNode.childNode(withName: "scene", recursively: true) {
-//            // Set the position of the castle
-//            castleNode.position = SCNVector3(x: 0, y: -0.5, z: 0.5)
-//            
-//            // Add the castleNode to the parent node
-//            parentNode.addChildNode(castleNode)
-//            
-//        }
-//    }
+    
+    func attackBowButton(for parentNode: SCNNode) {
+        guard let currentFrame = sceneView.session.currentFrame else { return }
+        
+        let arrow = Arrow()
+        
+        // Get the camera transform
+        let cameraTransform = currentFrame.camera.transform
+        let cameraPosition = SCNVector3(cameraTransform.columns.3.x, cameraTransform.columns.3.y, cameraTransform.columns.3.z)
+        
+        // Set the arrow's position to the camera's position
+        arrow.position = cameraPosition
+        
+        // Set the arrow's orientation to match the camera's orientation
+        let cameraOrientation = SCNVector3(-cameraTransform.columns.2.x, -cameraTransform.columns.2.y, -cameraTransform.columns.2.z)
+        arrow.look(at: SCNVector3(cameraPosition.x + cameraOrientation.x, cameraPosition.y + cameraOrientation.y, cameraPosition.z + cameraOrientation.z))
+        
+        // Add the arrow to the scene
+        parentNode.addChildNode(arrow)
+        
+        // Apply an impulse to the arrow to simulate launch
+        let force = SCNVector3(cameraOrientation.x * 10, cameraOrientation.y * 10, cameraOrientation.z * 10)
+        arrow.physicsBody?.applyForce(force, asImpulse: true)
+    }
     
     func session(_ session: ARSession, didFailWithError error: Error) {
         // Present an error message to the user
