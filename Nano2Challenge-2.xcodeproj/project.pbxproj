@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		938F1D122BF6517C00974243 /* Castle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938F1D112BF6517C00974243 /* Castle.swift */; };
 		938F1D152BF6519B00974243 /* Zombie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938F1D142BF6519B00974243 /* Zombie.swift */; };
+		938F1D172BF72EDA00974243 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938F1D162BF72EDA00974243 /* MainView.swift */; };
+		938F1D192BF7303B00974243 /* ARManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938F1D182BF7303B00974243 /* ARManager.swift */; };
 		93E060A92BF4A99400B986CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E060A82BF4A99400B986CB /* AppDelegate.swift */; };
 		93E060AB2BF4A99400B986CB /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 93E060AA2BF4A99400B986CB /* art.scnassets */; };
 		93E060AD2BF4A99400B986CB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E060AC2BF4A99400B986CB /* ViewController.swift */; };
@@ -19,6 +21,8 @@
 /* Begin PBXFileReference section */
 		938F1D112BF6517C00974243 /* Castle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Castle.swift; sourceTree = "<group>"; };
 		938F1D142BF6519B00974243 /* Zombie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zombie.swift; sourceTree = "<group>"; };
+		938F1D162BF72EDA00974243 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		938F1D182BF7303B00974243 /* ARManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARManager.swift; sourceTree = "<group>"; };
 		93E060A52BF4A99400B986CB /* Nano2Challenge-2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Nano2Challenge-2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		93E060A82BF4A99400B986CB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		93E060AA2BF4A99400B986CB /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -67,11 +71,13 @@
 			isa = PBXGroup;
 			children = (
 				93E060A82BF4A99400B986CB /* AppDelegate.swift */,
+				938F1D162BF72EDA00974243 /* MainView.swift */,
 				93E060AC2BF4A99400B986CB /* ViewController.swift */,
-				938F1D132BF6518500974243 /* SceneNode */,
 				93E060AA2BF4A99400B986CB /* art.scnassets */,
+				938F1D132BF6518500974243 /* SceneNode */,
 				93E060AE2BF4A99400B986CB /* Main.storyboard */,
 				93E060B12BF4A99600B986CB /* Assets.xcassets */,
+				938F1D182BF7303B00974243 /* ARManager.swift */,
 			);
 			path = "Nano2Challenge-2";
 			sourceTree = "<group>";
@@ -150,6 +156,8 @@
 				938F1D122BF6517C00974243 /* Castle.swift in Sources */,
 				938F1D152BF6519B00974243 /* Zombie.swift in Sources */,
 				93E060AD2BF4A99400B986CB /* ViewController.swift in Sources */,
+				938F1D172BF72EDA00974243 /* MainView.swift in Sources */,
+				938F1D192BF7303B00974243 /* ARManager.swift in Sources */,
 				93E060A92BF4A99400B986CB /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

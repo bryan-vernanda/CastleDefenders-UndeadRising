@@ -15,7 +15,7 @@ enum CollisionTypes: Int {
     case castle = 2
 }
 
-class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDelegate {
+class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDelegate, ObservableObject {
 
     @IBOutlet var sceneView: ARSCNView!
     
@@ -26,6 +26,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        sceneView = ARManager.shared.sceneView
+        sceneView.frame = self.view.frame
+        self.view.addSubview(sceneView)
         
         // Set the view's delegate
         sceneView.delegate = self
@@ -43,11 +47,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
 //            print("Zombie hit the castle!")
             contact.nodeB.removeFromParentNode()
-            print("node B removed")
+//            print("node B removed")
         } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) {
 //            print("Zombie hit the castle!")
             contact.nodeA.removeFromParentNode()
-            print("node A removed")
+//            print("node A removed")
         }
     }
     
@@ -103,7 +107,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
                 
                 // Spawn a zombie at the current position & limit the zombies
                 if self.limitZombies < 5 {
-                    print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
+//                    print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
                     self.spawnZombie(at: SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition), for: parentNode)
                     self.limitZombies += 1
                 }
