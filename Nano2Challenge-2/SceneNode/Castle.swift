@@ -9,7 +9,7 @@ import Foundation
 import SceneKit
 
 class Castle: SCNNode{
-    var health: Int = 20
+    var health: Int = 5
     var healthBarNode: SCNNode = SCNNode()
     
     override init() {
@@ -24,7 +24,7 @@ class Castle: SCNNode{
         //create physics node for the new physics body
         let physicsNode = SCNNode(geometry: largerShape) // the geometry inside is used only for debugging when changing the UIColor below
         //make the node invisible
-        physicsNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
+        physicsNode.geometry?.firstMaterial?.diffuse.contents = UIColor.clear
        
 //        self.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: self, options: nil))
 //        self.physicsBody?.categoryBitMask = CollisionTypes.castle.rawValue
@@ -33,6 +33,7 @@ class Castle: SCNNode{
         self.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(geometry: largerShape, options: nil))
         self.physicsBody?.categoryBitMask = CollisionTypes.castle.rawValue
         self.physicsBody?.contactTestBitMask = CollisionTypes.zombie.rawValue
+        self.physicsBody?.collisionBitMask = 0
         
         let healthBar = SCNBox(width: 1.8, height: 0.05, length: 0.02, chamferRadius: 0)
         self.healthBarNode = SCNNode(geometry: healthBar)
@@ -45,8 +46,6 @@ class Castle: SCNNode{
         if let castleNode = castleScene.rootNode.childNode(withName: "scene", recursively: true) {
             
             self.addChildNode(physicsNode)
-            
-//            castleNode.position = SCNVector3(x: 0, y: 0, z: 0.25)
             physicsNode.addChildNode(castleNode)
             
             borderNode.position = SCNVector3(x: 0, y: 2, z: 0.5)
@@ -59,5 +58,32 @@ class Castle: SCNNode{
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func takeDamage() {
+        health -= 1
+        updateHealthBar()
+        
+        if health <= 0 {
+            //show overlay of page "YOU LOSE"
+        }
+    }
+    
+    private func updateHealthBar() {
+        let newWidth = CGFloat(health) * 0.36
+        healthBarNode.geometry = SCNBox(width: newWidth, height: 0.05, length: 0.02, chamferRadius: 0)
+        healthBarNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
+        
+        if health == 4 {
+            healthBarNode.position = SCNVector3(x: 0.18, y: 0, z: 0)
+        } else if health == 3 {
+            healthBarNode.position = SCNVector3(x: 0.36, y: 0, z: 0)
+        } else if health == 2 {
+            healthBarNode.position = SCNVector3(x: 0.54, y: 0, z: 0)
+        } else if health == 1 {
+            healthBarNode.position = SCNVector3(x: 0.72, y: 0, z: 0)
+        } else if health == 0 {
+            healthBarNode.position = SCNVector3(x: 0.9, y: 0, z: 0)
+        }
     }
 }

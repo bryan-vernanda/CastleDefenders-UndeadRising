@@ -46,24 +46,32 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
-        if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
-//            print("Zombie hit the castle!")
-            contact.nodeB.removeFromParentNode()
-//            print("node B removed")
-        } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) {
-//            print("Zombie hit the castle!")
+        if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) {
+            
+            contact.nodeA.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
             contact.nodeA.removeFromParentNode()
-//            print("node A removed")
+            (contact.nodeB as? Castle)?.takeDamage()
+            
+        } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
+
+            contact.nodeB.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
+            contact.nodeB.removeFromParentNode()
+            (contact.nodeA as? Castle)?.takeDamage()
+            
         }
         
         if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
-//            handleZombieHit(contact: contact.nodeB)
+            
+            contact.nodeA.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
             contact.nodeA.removeFromParentNode()
             (contact.nodeB as? Zombie)?.takeDamage()
+            
         } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) {
-//            handleZombieHit(contact: contact.nodeA)
+            
+            contact.nodeB.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
             contact.nodeB.removeFromParentNode()
             (contact.nodeA as? Zombie)?.takeDamage()
+            
         }
         
     }
@@ -73,7 +81,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
-        configuration.planeDetection = .horizontal
+//        configuration.planeDetection = .horizontal
 
         // Run the view's session
         sceneView.session.run(configuration)

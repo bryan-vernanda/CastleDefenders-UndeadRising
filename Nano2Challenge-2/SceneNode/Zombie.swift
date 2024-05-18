@@ -30,6 +30,7 @@ class Zombie: SCNNode {
         self.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(geometry: largerShape, options: nil))
         self.physicsBody?.categoryBitMask = CollisionTypes.zombie.rawValue
         self.physicsBody?.contactTestBitMask = CollisionTypes.castle.rawValue | CollisionTypes.arrow.rawValue
+        self.physicsBody?.collisionBitMask = 0
         
         let healthBar = SCNBox(width: 0.4, height: 0.05, length: 0.02, chamferRadius: 0)
         self.healthBarNode = SCNNode(geometry: healthBar)
