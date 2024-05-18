@@ -96,7 +96,7 @@ class Zombie: SCNNode {
             // Make the node vanish after 2 seconds
             let vanishAction = SCNAction.sequence([
                 fallEffect,
-                SCNAction.wait(duration: 2.0),
+                SCNAction.wait(duration: 1.5),
                 SCNAction.removeFromParentNode()
             ])
             deadZombieNode.runAction(vanishAction)
