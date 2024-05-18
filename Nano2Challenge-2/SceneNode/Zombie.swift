@@ -12,6 +12,7 @@ class Zombie: SCNNode {
     
     var health: Int = 3
     var healthBarNode: SCNNode = SCNNode()
+    var physicsNode: SCNNode = SCNNode()
     
     init(at position: SCNVector3) {
         super.init()
@@ -23,7 +24,7 @@ class Zombie: SCNNode {
         let largerShape = SCNBox(width: 0.55, height: 0.9, length: 0.3, chamferRadius: 0)
         
         //create physics node for the new physics body
-        let physicsNode = SCNNode(geometry: largerShape) // the geometry inside is used only for debugging when changing the UIColor below
+        physicsNode = SCNNode(geometry: largerShape) // the geometry inside is used only for debugging when changing the UIColor below
         //make the node invisible
         physicsNode.geometry?.firstMaterial?.diffuse.contents = UIColor.clear
         
@@ -66,9 +67,39 @@ class Zombie: SCNNode {
         updateHealthBar()
         
         if health <= 0 {
-            self.removeFromParentNode()
+            changeToDeadZombie()
         } else {
             showHitEffect()
+        }
+    }
+    
+    private func changeToDeadZombie() {
+        // Remove current zombie nodes
+        self.childNodes.forEach { $0.removeFromParentNode() }
+        
+        // Remove physics body
+        self.physicsBody = nil
+        
+        // Load the dead zombie scene
+        let zombieDiedScene = SCNScene(named: "art.scnassets/ZombieDied.scn")!
+        if let deadZombieNode = zombieDiedScene.rootNode.childNode(withName: "scene", recursively: true) {
+            deadZombieNode.position = SCNVector3(x: 0, y: -0.5, z: 0)
+            
+            // Add the dead zombie node to the current node
+            self.addChildNode(deadZombieNode)
+            
+            // Define the rotation and fall effect
+            let rotateAction = SCNAction.rotateBy(x: -CGFloat.pi / 2, y: 0, z: 0, duration: 0.5)
+            let fallAction = SCNAction.moveBy(x: 0, y: 0, z: 0, duration: 0.5)
+            let fallEffect = SCNAction.group([rotateAction, fallAction])
+            
+            // Make the node vanish after 2 seconds
+            let vanishAction = SCNAction.sequence([
+                fallEffect,
+                SCNAction.wait(duration: 2.0),
+                SCNAction.removeFromParentNode()
+            ])
+            deadZombieNode.runAction(vanishAction)
         }
     }
     
@@ -97,9 +128,20 @@ class Zombie: SCNNode {
             zombieNode?.geometry?.firstMaterial?.diffuse.contents = UIColor.clear
         }
         
-        let sequence = SCNAction.sequence([colorChange, revertColor])
+        // Define the knockback effect
+        let currentPosition = self.position
+        let knockbackPosition1 = SCNVector3(currentPosition.x, currentPosition.y + 0.1, currentPosition.z - 0.25)
+        let knockbackPosition2 = SCNVector3(currentPosition.x, currentPosition.y, currentPosition.z - 0.5)
+        
+        let knockback1 = SCNAction.move(to: knockbackPosition1, duration: 0.05)
+        let knockback2 = SCNAction.move(to: knockbackPosition2, duration: 0.05)
+        let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: 0, z: 0.5), duration: 10.0)
+        
+        let sequence = SCNAction.sequence([colorChange, knockback1, revertColor, knockback2, moveAction])
+        self.removeAllActions()
         self.runAction(sequence)
     }
+
 }
 
 
