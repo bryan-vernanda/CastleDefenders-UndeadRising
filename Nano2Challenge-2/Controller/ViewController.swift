@@ -58,10 +58,12 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         
         if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
 //            handleZombieHit(contact: contact.nodeB)
-            contact.nodeB.removeFromParentNode()
+            contact.nodeA.removeFromParentNode()
+            (contact.nodeB as? Zombie)?.takeDamage()
         } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) {
 //            handleZombieHit(contact: contact.nodeA)
-            contact.nodeA.removeFromParentNode()
+            contact.nodeB.removeFromParentNode()
+            (contact.nodeA as? Zombie)?.takeDamage()
         }
         
     }

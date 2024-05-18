@@ -82,8 +82,7 @@
 			isa = PBXGroup;
 			children = (
 				93E060A82BF4A99400B986CB /* AppDelegate.swift */,
-				938F1D182BF7303B00974243 /* ARManager.swift */,
-				93E060AC2BF4A99400B986CB /* ViewController.swift */,
+				93F7DAC42BF86C9C0045A924 /* Controller */,
 				938F1D1D2BF7884D00974243 /* View */,
 				93E060AA2BF4A99400B986CB /* art.scnassets */,
 				938F1D132BF6518500974243 /* SceneNode */,
@@ -91,6 +90,15 @@
 				93E060B12BF4A99600B986CB /* Assets.xcassets */,
 			);
 			path = "Nano2Challenge-2";
+			sourceTree = "<group>";
+		};
+		93F7DAC42BF86C9C0045A924 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				938F1D182BF7303B00974243 /* ARManager.swift */,
+				93E060AC2BF4A99400B986CB /* ViewController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
