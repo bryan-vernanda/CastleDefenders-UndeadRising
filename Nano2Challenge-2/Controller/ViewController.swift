@@ -40,7 +40,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         sceneView.showsStatistics = true
         
         // Show world anchor
-//        sceneView.debugOptions = .showBoundingBoxes
+//        sceneView.debugOptions = .showWorldOrigin
         
         sceneView.scene.physicsWorld.contactDelegate = self
     }

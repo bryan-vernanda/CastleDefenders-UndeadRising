@@ -19,20 +19,41 @@ class Castle: SCNNode{
         
         self.position = SCNVector3(x: 0, y: -0.5, z: 0.5)
         
-        self.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: self, options: nil))
+        let largerShape = SCNBox(width: 0.55, height: 0.9, length: 0.01, chamferRadius: 0)
+        
+        //create physics node for the new physics body
+        let physicsNode = SCNNode(geometry: largerShape) // the geometry inside is used only for debugging when changing the UIColor below
+        //make the node invisible
+        physicsNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
+       
+//        self.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: self, options: nil))
+//        self.physicsBody?.categoryBitMask = CollisionTypes.castle.rawValue
+//        self.physicsBody?.contactTestBitMask = CollisionTypes.zombie.rawValue
+        
+        self.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(geometry: largerShape, options: nil))
         self.physicsBody?.categoryBitMask = CollisionTypes.castle.rawValue
         self.physicsBody?.contactTestBitMask = CollisionTypes.zombie.rawValue
         
-        let healthBar = SCNBox(width: 0.4, height: 0.05, length: 0.01, chamferRadius: 0)
+        let healthBar = SCNBox(width: 1.8, height: 0.05, length: 0.02, chamferRadius: 0)
         self.healthBarNode = SCNNode(geometry: healthBar)
         healthBarNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
         
-        let border = SCNBox(width: 0.41, height: 0.06, length: 0.01, chamferRadius: 0)
+        let border = SCNBox(width: 1.81, height: 0.06, length: 0.01, chamferRadius: 0)
         let borderNode = SCNNode(geometry: border)
         borderNode.geometry?.firstMaterial?.diffuse.contents = UIColor.black
         
         if let castleNode = castleScene.rootNode.childNode(withName: "scene", recursively: true) {
-            self.addChildNode(castleNode)
+            
+            self.addChildNode(physicsNode)
+            
+//            castleNode.position = SCNVector3(x: 0, y: 0, z: 0.25)
+            physicsNode.addChildNode(castleNode)
+            
+            borderNode.position = SCNVector3(x: 0, y: 2, z: 0.5)
+            healthBarNode.position = SCNVector3(x: 0, y: 0, z: 0)
+            
+            borderNode.addChildNode(healthBarNode)
+            physicsNode.addChildNode(borderNode)
         }
     }
     
