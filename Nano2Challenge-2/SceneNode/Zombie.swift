@@ -31,7 +31,7 @@ class Zombie: SCNNode {
         self.physicsBody?.categoryBitMask = CollisionTypes.zombie.rawValue
         self.physicsBody?.contactTestBitMask = CollisionTypes.castle.rawValue | CollisionTypes.arrow.rawValue
         
-        let healthBar = SCNBox(width: 0.4, height: 0.05, length: 0.01, chamferRadius: 0)
+        let healthBar = SCNBox(width: 0.4, height: 0.05, length: 0.02, chamferRadius: 0)
         self.healthBarNode = SCNNode(geometry: healthBar)
         healthBarNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
         
@@ -46,12 +46,12 @@ class Zombie: SCNNode {
             physicsNode.addChildNode(zombieNode) // add zombienode as child of the new physics body to overlap it
             
             borderNode.position = SCNVector3(x: 0, y: 0.5, z: 0.1)
-            healthBarNode.position = SCNVector3(x: 0, y: 0, z: 0.01) // Slightly in front of the border
+            healthBarNode.position = SCNVector3(x: 0, y: 0, z: 0) // Slightly in front of the border
             
             borderNode.addChildNode(healthBarNode)
             physicsNode.addChildNode(borderNode)
             
-            let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: -0.5, z: 0.5), duration: 10.0)
+            let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: 0, z: 0.5), duration: 10.0)
             self.runAction(moveAction)
         }
     }
@@ -71,15 +71,15 @@ class Zombie: SCNNode {
     
     private func updateHealthBar() {
         let newWidth = CGFloat(health) * 0.1333
-        healthBarNode.geometry = SCNBox(width: newWidth, height: 0.05, length: 0.01, chamferRadius: 0)
+        healthBarNode.geometry = SCNBox(width: newWidth, height: 0.05, length: 0.02, chamferRadius: 0)
         healthBarNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
         
         if health == 2 {
-            healthBarNode.position = SCNVector3(x: -0.065, y: 0, z: 0.01)
+            healthBarNode.position = SCNVector3(x: -0.065, y: 0, z: 0)
         } else if health == 1 {
-            healthBarNode.position = SCNVector3(x: -0.133, y: 0, z: 0.01)
+            healthBarNode.position = SCNVector3(x: -0.133, y: 0, z: 0)
         } else if health == 0 {
-            healthBarNode.position = SCNVector3(x: -0.2, y: 0, z: 0.01)
+            healthBarNode.position = SCNVector3(x: -0.2, y: 0, z: 0)
         }
     }
 }
