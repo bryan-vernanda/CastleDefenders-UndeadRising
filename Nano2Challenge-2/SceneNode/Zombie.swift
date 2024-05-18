@@ -67,6 +67,8 @@ class Zombie: SCNNode {
         
         if health <= 0 {
             self.removeFromParentNode()
+        } else {
+            showHitEffect()
         }
     }
     
@@ -82,6 +84,21 @@ class Zombie: SCNNode {
         } else if health == 0 {
             healthBarNode.position = SCNVector3(x: -0.2, y: 0, z: 0)
         }
+    }
+    
+    private func showHitEffect() {
+        let colorChange = SCNAction.customAction(duration: 0.1) { node, elapsedTime in
+            let zombieNode = node.childNodes.first { $0.geometry != nil }
+            zombieNode?.geometry?.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
+        }
+        
+        let revertColor = SCNAction.customAction(duration: 0.1) { node, elapsedTime in
+            let zombieNode = node.childNodes.first { $0.geometry != nil }
+            zombieNode?.geometry?.firstMaterial?.diffuse.contents = UIColor.clear
+        }
+        
+        let sequence = SCNAction.sequence([colorChange, revertColor])
+        self.runAction(sequence)
     }
 }
 

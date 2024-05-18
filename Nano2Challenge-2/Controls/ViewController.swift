@@ -144,7 +144,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 //                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
                 
                 // Spawn a zombie at the current position & limit the zombies
-                if self.limitZombies < 5 {
+                if self.limitZombies < 10 {
 //                    print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
                     self.spawnZombie(at: SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition), for: parentNode)
                     self.limitZombies += 1
