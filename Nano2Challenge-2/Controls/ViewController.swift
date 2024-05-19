@@ -111,11 +111,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         spawnTimer?.cancel()
         spawnTimer = nil
         
-//        // Pause the view's session
+        // Pause the view's session
         sceneView.session.pause()
-//        
-//        // Stop and remove the AR session
-//        sceneView.session = nil
         
         // Stop and reset the AR session
         let configuration = ARWorldTrackingConfiguration()

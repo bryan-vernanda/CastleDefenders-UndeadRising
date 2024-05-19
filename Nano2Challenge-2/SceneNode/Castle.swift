@@ -25,10 +25,6 @@ class Castle: SCNNode{
         let physicsNode = SCNNode(geometry: largerShape) // the geometry inside is used only for debugging when changing the UIColor below
         //make the node invisible
         physicsNode.geometry?.firstMaterial?.diffuse.contents = UIColor.clear
-       
-//        self.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(node: self, options: nil))
-//        self.physicsBody?.categoryBitMask = CollisionTypes.castle.rawValue
-//        self.physicsBody?.contactTestBitMask = CollisionTypes.zombie.rawValue
         
         self.physicsBody = SCNPhysicsBody(type: .static, shape: SCNPhysicsShape(geometry: largerShape, options: nil))
         self.physicsBody?.categoryBitMask = CollisionTypes.castle.rawValue

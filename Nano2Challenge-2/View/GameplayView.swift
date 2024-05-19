@@ -31,9 +31,6 @@ struct GameplayView: View {
                     .frame(width: 20, height: 20)
             }
             .navigationBarBackButtonHidden(true)
-//            .onAppear {
-//                ARManager.shared.actionStreamZombie.send(.secondPage)
-//            }
     }
 }
 

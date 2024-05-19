@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ARViewContainer: UIViewControllerRepresentable {
-//    let viewController: ViewController
     @Binding var spawningZombiePage: Int
     
     func makeUIViewController(context: Context) -> ViewController {

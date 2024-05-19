@@ -18,10 +18,6 @@ struct MainView: View {
                 if !navigateToGameplayView {
                     ARViewContainer(spawningZombiePage: $spawningZombiePage)
                         .ignoresSafeArea()
-//                        .onAppear {
-//                            ARManager.shared.actionStreamZombie.send(.firstPage)
-//                            print("success1")
-//                        }
                 }
                 
                 VStack(alignment: .center) {
