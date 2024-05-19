@@ -132,7 +132,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             if spawningZombiePage == 1 {
                 startSpawningZombies(for: node, spawningCount: spawningZombiePage)
             } else if spawningZombiePage == 2 {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 12.0) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 7) {
                     self.startSpawningZombies(for: node, spawningCount: self.spawningZombiePage)
                 }
             }

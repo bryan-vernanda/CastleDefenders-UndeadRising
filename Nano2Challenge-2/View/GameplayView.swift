@@ -12,7 +12,7 @@ import SwiftUI
 struct GameplayView: View {
     @State private var spawningZombiePage: Int = 2
     @State private var showBackground: Bool = true
-    @State private var remainingTime: Int = 10
+    @State private var remainingTime: Int = 5
 
     @State private var randomGIFName: String
 
