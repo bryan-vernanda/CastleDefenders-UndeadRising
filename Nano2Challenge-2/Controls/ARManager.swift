@@ -13,6 +13,11 @@ enum ARAction {
     case attackButton
 }
 
+enum ARActionZombie {
+    case firstPage
+    case secondPage
+}
+
 class ARManager {
     static let shared = ARManager()
     
@@ -22,4 +27,5 @@ class ARManager {
     
     let sceneView: ARSCNView
     var actionStream = PassthroughSubject<ARAction, Never>()
+//    var actionStreamZombie = PassthroughSubject<ARActionZombie, Never>()
 }

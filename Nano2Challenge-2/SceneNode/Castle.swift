@@ -60,13 +60,17 @@ class Castle: SCNNode{
         fatalError("init(coder:) has not been implemented")
     }
     
-    func takeDamage() {
-        health -= 1
-        updateHealthBar()
+    func takeDamage(spawningZombiePage: Int) {
         
-        if health <= 0 {
-            //show overlay of page "YOU LOSE"
+        if spawningZombiePage == 2 {
+            health -= 1
+            updateHealthBar()
+            
+            if health <= 0 {
+                //show overlay of page "YOU LOSE"
+            }
         }
+        
     }
     
     private func updateHealthBar() {

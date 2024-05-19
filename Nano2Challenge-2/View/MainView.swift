@@ -8,41 +8,50 @@
 import SwiftUI
 
 struct MainView: View {
-    @StateObject var viewController: ViewController = ViewController()
+    @State private var spawningZombiePage: Int = 1
+//    @StateObject var viewController: ViewController
+    @State private var navigateToGameplayView: Bool = false
     
     var body: some View {
-        ARViewContainer(viewController: viewController)
-            .ignoresSafeArea()
-            .overlay(alignment: .bottom){
-                Button {
-                    ARManager.shared.actionStream.send(.attackButton)
-                } label: {
-                    Image("AttackBowButton")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width:150, height: 150)
+        NavigationStack {
+            ZStack {
+                if !navigateToGameplayView {
+                    ARViewContainer(spawningZombiePage: $spawningZombiePage)
+                        .ignoresSafeArea()
+//                        .onAppear {
+//                            ARManager.shared.actionStreamZombie.send(.firstPage)
+//                            print("success1")
+//                        }
                 }
-                .position(x: UIScreen.main.bounds.width - 150, y: UIScreen.main.bounds.height - 150)
                 
-                Image(systemName: "plus")
-                    .resizable()
-                    .foregroundColor(Color.white)
-                    .scaledToFit()
-                    .frame(width: 20, height: 20)
+                VStack(alignment: .center) {
+                    Button {
+                        navigateToGameplayView = true
+                    } label: {
+                        Image("SingeplayerButton")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 700)
+                    }
+                    .padding(.bottom)
+                    
+                    Button {
+                        // add action
+                    } label: {
+                        Image("MultiplayerButton")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 700)
+                    }
+                }
             }
+            .navigationDestination(isPresented: $navigateToGameplayView) {
+                GameplayView()
+            }
+        }
     }
 }
 
-struct ARViewContainer: UIViewControllerRepresentable {
-    let viewController: ViewController
-    
-    func makeUIViewController(context: Context) -> ViewController {
-        return viewController
-    }
-    
-    func updateUIViewController(_ uiViewController: ViewController, context: Context) {
-    }
-}
 
 #Preview {
     MainView()

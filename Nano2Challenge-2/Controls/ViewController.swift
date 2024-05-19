@@ -10,6 +10,7 @@ import SceneKit
 import ARKit
 import GameplayKit
 import Combine
+import SwiftUI
 
 enum CollisionTypes: Int {
     case zombie = 1
@@ -21,10 +22,22 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 
     @IBOutlet var sceneView: ARSCNView!
     
+    private var cancellable: Set<AnyCancellable> = []
     private var spawnTimer: DispatchSourceTimer?
     private var currentZPosition: Float = -5
     private let randomSource = GKRandomSource()
     private var limitZombies = 0
+    @Binding var spawningZombiePage: Int
+    
+    init(spawningZombiePage: Binding<Int>) {
+        self._spawningZombiePage = spawningZombiePage
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        self._spawningZombiePage = Binding.constant(1)  // default value
+        super.init(coder: aDecoder)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,13 +63,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             
             contact.nodeA.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
             contact.nodeA.removeFromParentNode()
-            (contact.nodeB as? Castle)?.takeDamage()
+            (contact.nodeB as? Castle)?.takeDamage(spawningZombiePage: spawningZombiePage)
             
         } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
 
             contact.nodeB.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
             contact.nodeB.removeFromParentNode()
-            (contact.nodeA as? Castle)?.takeDamage()
+            (contact.nodeA as? Castle)?.takeDamage(spawningZombiePage: spawningZombiePage)
             
         }
         
@@ -94,12 +107,21 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // Pause the view's session
-        sceneView.session.pause()
-        
         // Invalidate the timer when the view disappears
         spawnTimer?.cancel()
         spawnTimer = nil
+        
+//        // Pause the view's session
+        sceneView.session.pause()
+//        
+//        // Stop and remove the AR session
+//        sceneView.session = nil
+        
+        // Stop and reset the AR session
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.isLightEstimationEnabled = true
+        sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        sceneView.removeFromSuperview()
     }
 
     // MARK: - ARSCNViewDelegate
@@ -109,15 +131,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             // Add the castle to the scene
             addCastle(for: node)
             
-            // Start spawning zombies at regular intervals
-            startSpawningZombies(for: node)
+            // Start spawning zombies at regular intervals in different pages
+            startSpawningZombies(for: node, spawningCount: spawningZombiePage)
             
             // Attack button
             subscribeToActionStream(for: node)
         }
     }
-    
-    private var cancellable: Set<AnyCancellable> = []
     
     func subscribeToActionStream(for node: SCNNode) {
         ARManager.shared
@@ -131,7 +151,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             .store(in: &cancellable)
     }
     
-    private func startSpawningZombies(for parentNode: SCNNode) {
+    private func startSpawningZombies(for parentNode: SCNNode, spawningCount: Int) {
         // Create a dispatch timer to spawn zombies every 2 seconds
         spawnTimer = DispatchSource.makeTimerSource()
         spawnTimer?.schedule(deadline: .now(), repeating: 2.0)
@@ -147,7 +167,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
                 if self.limitZombies < 10 {
 //                    print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
                     self.spawnZombie(at: SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition), for: parentNode)
-                    self.limitZombies += 1
+                    if spawningCount == 2 {
+                        self.limitZombies += 1
+                    }
                 }
             }
         }
