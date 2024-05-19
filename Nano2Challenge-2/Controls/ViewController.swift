@@ -50,7 +50,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         sceneView.delegate = self
         
         // Show statistics such as fps and timing information
-        sceneView.showsStatistics = true
+//        sceneView.showsStatistics = true
         
         // Show world anchor
 //        sceneView.debugOptions = .showWorldOrigin
@@ -129,7 +129,13 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             addCastle(for: node)
             
             // Start spawning zombies at regular intervals in different pages
-            startSpawningZombies(for: node, spawningCount: spawningZombiePage)
+            if spawningZombiePage == 1 {
+                startSpawningZombies(for: node, spawningCount: spawningZombiePage)
+            } else if spawningZombiePage == 2 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 12.0) {
+                    self.startSpawningZombies(for: node, spawningCount: self.spawningZombiePage)
+                }
+            }
             
             // Attack button
             subscribeToActionStream(for: node)

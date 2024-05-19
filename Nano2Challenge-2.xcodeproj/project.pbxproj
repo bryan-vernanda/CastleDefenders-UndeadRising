@@ -17,6 +17,13 @@
 		93E060AD2BF4A99400B986CB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E060AC2BF4A99400B986CB /* ViewController.swift */; };
 		93E060B02BF4A99400B986CB /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 93E060AF2BF4A99400B986CB /* Base */; };
 		93E060B22BF4A99600B986CB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93E060B12BF4A99600B986CB /* Assets.xcassets */; };
+		93E5F8A32BF9FCB0000A2662 /* AccelometerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F8A22BF9FCB0000A2662 /* AccelometerManager.swift */; };
+		93E5F8A52BFA0729000A2662 /* TiltPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F8A42BFA0729000A2662 /* TiltPhone.swift */; };
+		93E5F8A72BFA3396000A2662 /* GIFImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F8A62BFA3396000A2662 /* GIFImageView.swift */; };
+		93E5F8B32BFA3D71000A2662 /* gif1.gif in Resources */ = {isa = PBXBuildFile; fileRef = 93E5F8B22BFA3D71000A2662 /* gif1.gif */; };
+		93E5F8C02BFA50CF000A2662 /* gif2.gif in Resources */ = {isa = PBXBuildFile; fileRef = 93E5F8BF2BFA50CF000A2662 /* gif2.gif */; };
+		93E5F8C22BFA50D7000A2662 /* gif3.gif in Resources */ = {isa = PBXBuildFile; fileRef = 93E5F8C12BFA50D7000A2662 /* gif3.gif */; };
+		93E5F8C62BFA50E7000A2662 /* gif4.gif in Resources */ = {isa = PBXBuildFile; fileRef = 93E5F8C52BFA50E7000A2662 /* gif4.gif */; };
 		93F7DAC62BF90C270045A924 /* GameplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F7DAC52BF90C270045A924 /* GameplayView.swift */; };
 		93F7DAC82BF90C5D0045A924 /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F7DAC72BF90C5D0045A924 /* ARViewContainer.swift */; };
 /* End PBXBuildFile section */
@@ -33,6 +40,13 @@
 		93E060AC2BF4A99400B986CB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		93E060AF2BF4A99400B986CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		93E060B12BF4A99600B986CB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		93E5F8A22BF9FCB0000A2662 /* AccelometerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelometerManager.swift; sourceTree = "<group>"; };
+		93E5F8A42BFA0729000A2662 /* TiltPhone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiltPhone.swift; sourceTree = "<group>"; };
+		93E5F8A62BFA3396000A2662 /* GIFImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GIFImageView.swift; sourceTree = "<group>"; };
+		93E5F8B22BFA3D71000A2662 /* gif1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif1.gif; sourceTree = "<group>"; };
+		93E5F8BF2BFA50CF000A2662 /* gif2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif2.gif; sourceTree = "<group>"; };
+		93E5F8C12BFA50D7000A2662 /* gif3.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif3.gif; sourceTree = "<group>"; };
+		93E5F8C52BFA50E7000A2662 /* gif4.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif4.gif; sourceTree = "<group>"; };
 		93F7DAC52BF90C270045A924 /* GameplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameplayView.swift; sourceTree = "<group>"; };
 		93F7DAC72BF90C5D0045A924 /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -63,6 +77,8 @@
 			children = (
 				938F1D202BF7889700974243 /* MainView.swift */,
 				93F7DAC52BF90C270045A924 /* GameplayView.swift */,
+				93E5F8A42BFA0729000A2662 /* TiltPhone.swift */,
+				93E5F8A62BFA3396000A2662 /* GIFImageView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -87,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				93E060A82BF4A99400B986CB /* AppDelegate.swift */,
+				93E5F8B42BFA3D87000A2662 /* Animated GIF */,
 				93F7DAC42BF86C9C0045A924 /* Controls */,
 				938F1D1D2BF7884D00974243 /* View */,
 				93E060AA2BF4A99400B986CB /* art.scnassets */,
@@ -97,12 +114,24 @@
 			path = "Nano2Challenge-2";
 			sourceTree = "<group>";
 		};
+		93E5F8B42BFA3D87000A2662 /* Animated GIF */ = {
+			isa = PBXGroup;
+			children = (
+				93E5F8C52BFA50E7000A2662 /* gif4.gif */,
+				93E5F8C12BFA50D7000A2662 /* gif3.gif */,
+				93E5F8BF2BFA50CF000A2662 /* gif2.gif */,
+				93E5F8B22BFA3D71000A2662 /* gif1.gif */,
+			);
+			path = "Animated GIF";
+			sourceTree = "<group>";
+		};
 		93F7DAC42BF86C9C0045A924 /* Controls */ = {
 			isa = PBXGroup;
 			children = (
 				938F1D182BF7303B00974243 /* ARManager.swift */,
 				93E060AC2BF4A99400B986CB /* ViewController.swift */,
 				93F7DAC72BF90C5D0045A924 /* ARViewContainer.swift */,
+				93E5F8A22BF9FCB0000A2662 /* AccelometerManager.swift */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -166,8 +195,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				93E060AB2BF4A99400B986CB /* art.scnassets in Resources */,
+				93E5F8C22BFA50D7000A2662 /* gif3.gif in Resources */,
 				93E060B22BF4A99600B986CB /* Assets.xcassets in Resources */,
+				93E5F8C02BFA50CF000A2662 /* gif2.gif in Resources */,
+				93E5F8B32BFA3D71000A2662 /* gif1.gif in Resources */,
 				93E060B02BF4A99400B986CB /* Base in Resources */,
+				93E5F8C62BFA50E7000A2662 /* gif4.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -180,11 +213,14 @@
 			files = (
 				93F7DAC62BF90C270045A924 /* GameplayView.swift in Sources */,
 				938F1D212BF7889700974243 /* MainView.swift in Sources */,
+				93E5F8A32BF9FCB0000A2662 /* AccelometerManager.swift in Sources */,
 				938F1D122BF6517C00974243 /* Castle.swift in Sources */,
 				938F1D152BF6519B00974243 /* Zombie.swift in Sources */,
 				93E060AD2BF4A99400B986CB /* ViewController.swift in Sources */,
 				93F7DAC82BF90C5D0045A924 /* ARViewContainer.swift in Sources */,
+				93E5F8A52BFA0729000A2662 /* TiltPhone.swift in Sources */,
 				938F1D232BF788BB00974243 /* Arrow.swift in Sources */,
+				93E5F8A72BFA3396000A2662 /* GIFImageView.swift in Sources */,
 				938F1D192BF7303B00974243 /* ARManager.swift in Sources */,
 				93E060A92BF4A99400B986CB /* AppDelegate.swift in Sources */,
 			);

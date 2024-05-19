@@ -9,7 +9,6 @@ import SwiftUI
 
 struct MainView: View {
     @State private var spawningZombiePage: Int = 1
-//    @StateObject var viewController: ViewController
     @State private var navigateToGameplayView: Bool = false
     
     var body: some View {
@@ -42,7 +41,7 @@ struct MainView: View {
                 }
             }
             .navigationDestination(isPresented: $navigateToGameplayView) {
-                GameplayView()
+                TiltPhone()
             }
         }
     }
