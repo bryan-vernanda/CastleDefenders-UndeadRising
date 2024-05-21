@@ -1,0 +1,15 @@
+{
+  "originHash" : "981e0313d67c53c4ddb07f3ae7cd3221f4a8f38ffcd601dc6b01bea20ad6867b",
+  "pins" : [
+    {
+      "identity" : "multipeer-session",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RyanKopinskyLLC/multipeer-session",
+      "state" : {
+        "revision" : "1a03845f089eb2a57d5bae39b922df02371be4d1",
+        "version" : "1.0.1"
+      }
+    }
+  ],
+  "version" : 3
+}

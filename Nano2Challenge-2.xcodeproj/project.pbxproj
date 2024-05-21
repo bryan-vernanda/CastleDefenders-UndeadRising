@@ -24,6 +24,10 @@
 		93E5F8C02BFA50CF000A2662 /* gif2.gif in Resources */ = {isa = PBXBuildFile; fileRef = 93E5F8BF2BFA50CF000A2662 /* gif2.gif */; };
 		93E5F8C22BFA50D7000A2662 /* gif3.gif in Resources */ = {isa = PBXBuildFile; fileRef = 93E5F8C12BFA50D7000A2662 /* gif3.gif */; };
 		93E5F8C62BFA50E7000A2662 /* gif4.gif in Resources */ = {isa = PBXBuildFile; fileRef = 93E5F8C52BFA50E7000A2662 /* gif4.gif */; };
+		93E5F9742BFCDF8D000A2662 /* ControllerMultiplayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9732BFCDF8D000A2662 /* ControllerMultiplayer.swift */; };
+		93E5F9762BFCE027000A2662 /* ArrowMultiplayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9752BFCE027000A2662 /* ArrowMultiplayer.swift */; };
+		93E5F9782BFCE120000A2662 /* MultiplayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9772BFCE120000A2662 /* MultiplayerView.swift */; };
+		93E5F97C2BFCEB19000A2662 /* MultipeerSession in Frameworks */ = {isa = PBXBuildFile; productRef = 93E5F97B2BFCEB19000A2662 /* MultipeerSession */; };
 		93F7DAC62BF90C270045A924 /* GameplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F7DAC52BF90C270045A924 /* GameplayView.swift */; };
 		93F7DAC82BF90C5D0045A924 /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F7DAC72BF90C5D0045A924 /* ARViewContainer.swift */; };
 /* End PBXBuildFile section */
@@ -47,6 +51,10 @@
 		93E5F8BF2BFA50CF000A2662 /* gif2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif2.gif; sourceTree = "<group>"; };
 		93E5F8C12BFA50D7000A2662 /* gif3.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif3.gif; sourceTree = "<group>"; };
 		93E5F8C52BFA50E7000A2662 /* gif4.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif4.gif; sourceTree = "<group>"; };
+		93E5F9732BFCDF8D000A2662 /* ControllerMultiplayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerMultiplayer.swift; sourceTree = "<group>"; };
+		93E5F9752BFCE027000A2662 /* ArrowMultiplayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowMultiplayer.swift; sourceTree = "<group>"; };
+		93E5F9772BFCE120000A2662 /* MultiplayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerView.swift; sourceTree = "<group>"; };
+		93E5F9792BFCE935000A2662 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		93F7DAC52BF90C270045A924 /* GameplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameplayView.swift; sourceTree = "<group>"; };
 		93F7DAC72BF90C5D0045A924 /* ARViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARViewContainer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -56,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93E5F97C2BFCEB19000A2662 /* MultipeerSession in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,6 +77,7 @@
 				938F1D112BF6517C00974243 /* Castle.swift */,
 				938F1D142BF6519B00974243 /* Zombie.swift */,
 				938F1D222BF788BB00974243 /* Arrow.swift */,
+				93E5F9752BFCE027000A2662 /* ArrowMultiplayer.swift */,
 			);
 			path = SceneNode;
 			sourceTree = "<group>";
@@ -79,6 +89,7 @@
 				93F7DAC52BF90C270045A924 /* GameplayView.swift */,
 				93E5F8A42BFA0729000A2662 /* TiltPhone.swift */,
 				93E5F8A62BFA3396000A2662 /* GIFImageView.swift */,
+				93E5F9772BFCE120000A2662 /* MultiplayerView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -102,6 +113,7 @@
 		93E060A72BF4A99400B986CB /* Nano2Challenge-2 */ = {
 			isa = PBXGroup;
 			children = (
+				93E5F9792BFCE935000A2662 /* Info.plist */,
 				93E060A82BF4A99400B986CB /* AppDelegate.swift */,
 				93E5F8B42BFA3D87000A2662 /* Animated GIF */,
 				93F7DAC42BF86C9C0045A924 /* Controls */,
@@ -132,6 +144,7 @@
 				93E060AC2BF4A99400B986CB /* ViewController.swift */,
 				93F7DAC72BF90C5D0045A924 /* ARViewContainer.swift */,
 				93E5F8A22BF9FCB0000A2662 /* AccelometerManager.swift */,
+				93E5F9732BFCDF8D000A2662 /* ControllerMultiplayer.swift */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -152,6 +165,9 @@
 			dependencies = (
 			);
 			name = "Nano2Challenge-2";
+			packageProductDependencies = (
+				93E5F97B2BFCEB19000A2662 /* MultipeerSession */,
+			);
 			productName = "Nano2Challenge-2";
 			productReference = 93E060A52BF4A99400B986CB /* Nano2Challenge-2.app */;
 			productType = "com.apple.product-type.application";
@@ -180,6 +196,9 @@
 				Base,
 			);
 			mainGroup = 93E0609C2BF4A99400B986CB;
+			packageReferences = (
+				93E5F97A2BFCEB19000A2662 /* XCRemoteSwiftPackageReference "multipeer-session" */,
+			);
 			productRefGroup = 93E060A62BF4A99400B986CB /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -213,10 +232,13 @@
 			files = (
 				93F7DAC62BF90C270045A924 /* GameplayView.swift in Sources */,
 				938F1D212BF7889700974243 /* MainView.swift in Sources */,
+				93E5F9762BFCE027000A2662 /* ArrowMultiplayer.swift in Sources */,
+				93E5F9782BFCE120000A2662 /* MultiplayerView.swift in Sources */,
 				93E5F8A32BF9FCB0000A2662 /* AccelometerManager.swift in Sources */,
 				938F1D122BF6517C00974243 /* Castle.swift in Sources */,
 				938F1D152BF6519B00974243 /* Zombie.swift in Sources */,
 				93E060AD2BF4A99400B986CB /* ViewController.swift in Sources */,
+				93E5F9742BFCDF8D000A2662 /* ControllerMultiplayer.swift in Sources */,
 				93F7DAC82BF90C5D0045A924 /* ARViewContainer.swift in Sources */,
 				93E5F8A52BFA0729000A2662 /* TiltPhone.swift in Sources */,
 				938F1D232BF788BB00974243 /* Arrow.swift in Sources */,
@@ -368,14 +390,16 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2U62MM8G6X;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Nano2Challenge-2/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Castle Defenders: Undead Rising";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.adventure-games";
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -399,14 +423,16 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2U62MM8G6X;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Nano2Challenge-2/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Castle Defenders: Undead Rising";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.adventure-games";
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -443,6 +469,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		93E5F97A2BFCEB19000A2662 /* XCRemoteSwiftPackageReference "multipeer-session" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RyanKopinskyLLC/multipeer-session";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		93E5F97B2BFCEB19000A2662 /* MultipeerSession */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 93E5F97A2BFCEB19000A2662 /* XCRemoteSwiftPackageReference "multipeer-session" */;
+			productName = MultipeerSession;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 93E0609D2BF4A99400B986CB /* Project object */;
 }

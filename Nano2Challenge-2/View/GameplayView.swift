@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct GameplayView: View {
     @State private var spawningZombiePage: Int = 2
     @State private var showBackground: Bool = true

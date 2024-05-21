@@ -17,3 +17,14 @@ struct ARViewContainer: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: ViewController, context: Context) {
     }
 }
+
+struct ARViewContainerMultiplayer: UIViewControllerRepresentable {
+//    @Binding var spawningZombiePage: Int
+    
+    func makeUIViewController(context: Context) -> ControllerMultiplayer {
+        return ControllerMultiplayer()
+    }
+    
+    func updateUIViewController(_ uiViewController: ControllerMultiplayer, context: Context) {
+    }
+}

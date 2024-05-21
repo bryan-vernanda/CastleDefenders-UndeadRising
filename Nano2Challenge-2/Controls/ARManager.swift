@@ -29,3 +29,15 @@ class ARManager {
     var actionStream = PassthroughSubject<ARAction, Never>()
 //    var actionStreamZombie = PassthroughSubject<ARActionZombie, Never>()
 }
+
+class ARManager2 {
+    static let shared = ARManager2()
+    
+    private init() {
+        sceneView2 = ARSCNView()
+    }
+    
+    let sceneView2: ARSCNView
+//    var actionStream = PassthroughSubject<ARAction, Never>()
+//    var actionStreamZombie = PassthroughSubject<ARActionZombie, Never>()
+}

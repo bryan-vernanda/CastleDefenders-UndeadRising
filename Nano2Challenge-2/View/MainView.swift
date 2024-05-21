@@ -10,6 +10,7 @@ import SwiftUI
 struct MainView: View {
     @State private var spawningZombiePage: Int = 1
     @State private var navigateToGameplayView: Bool = false
+    @State private var navigateToMultiplayerView: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -31,7 +32,7 @@ struct MainView: View {
                     .padding(.bottom)
                     
                     Button {
-                        // add action
+                        navigateToMultiplayerView = true
                     } label: {
                         Image("MultiplayerButton")
                             .resizable()
@@ -42,6 +43,9 @@ struct MainView: View {
             }
             .navigationDestination(isPresented: $navigateToGameplayView) {
                 TiltPhone()
+            }
+            .navigationDestination(isPresented: $navigateToMultiplayerView) {
+                MultiplayerView()
             }
         }
     }
