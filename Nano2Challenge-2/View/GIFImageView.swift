@@ -8,7 +8,7 @@
 import SwiftUI
 import UIKit
 import ImageIO
-//        gifNames[Int.random(in: 0..<gifNames.count)]
+
 struct GIFImageView: UIViewRepresentable {
     @Binding var gifName: String
     

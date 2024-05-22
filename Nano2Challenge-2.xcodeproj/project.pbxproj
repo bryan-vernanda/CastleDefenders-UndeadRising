@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		93733D702BFDA61100A8791C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93733D6F2BFDA61100A8791C /* Launch Screen.storyboard */; };
 		938F1D122BF6517C00974243 /* Castle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938F1D112BF6517C00974243 /* Castle.swift */; };
 		938F1D152BF6519B00974243 /* Zombie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938F1D142BF6519B00974243 /* Zombie.swift */; };
 		938F1D192BF7303B00974243 /* ARManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938F1D182BF7303B00974243 /* ARManager.swift */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		93733D6F2BFDA61100A8791C /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		938F1D112BF6517C00974243 /* Castle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Castle.swift; sourceTree = "<group>"; };
 		938F1D142BF6519B00974243 /* Zombie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zombie.swift; sourceTree = "<group>"; };
 		938F1D182BF7303B00974243 /* ARManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARManager.swift; sourceTree = "<group>"; };
@@ -115,12 +117,13 @@
 			children = (
 				93E5F9792BFCE935000A2662 /* Info.plist */,
 				93E060A82BF4A99400B986CB /* AppDelegate.swift */,
+				93E060AA2BF4A99400B986CB /* art.scnassets */,
 				93E5F8B42BFA3D87000A2662 /* Animated GIF */,
 				93F7DAC42BF86C9C0045A924 /* Controls */,
 				938F1D1D2BF7884D00974243 /* View */,
-				93E060AA2BF4A99400B986CB /* art.scnassets */,
 				938F1D132BF6518500974243 /* SceneNode */,
 				93E060AE2BF4A99400B986CB /* Main.storyboard */,
+				93733D6F2BFDA61100A8791C /* Launch Screen.storyboard */,
 				93E060B12BF4A99600B986CB /* Assets.xcassets */,
 			);
 			path = "Nano2Challenge-2";
@@ -215,6 +218,7 @@
 			files = (
 				93E060AB2BF4A99400B986CB /* art.scnassets in Resources */,
 				93E5F8C22BFA50D7000A2662 /* gif3.gif in Resources */,
+				93733D702BFDA61100A8791C /* Launch Screen.storyboard in Resources */,
 				93E060B22BF4A99600B986CB /* Assets.xcassets in Resources */,
 				93E5F8C02BFA50CF000A2662 /* gif2.gif in Resources */,
 				93E5F8B32BFA3D71000A2662 /* gif1.gif in Resources */,
@@ -396,10 +400,12 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationLandscapeRight;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -429,10 +435,12 @@
 				INFOPLIST_KEY_NSCameraUsageDescription = "";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationLandscapeRight;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

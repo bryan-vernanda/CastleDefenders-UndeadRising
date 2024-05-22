@@ -14,17 +14,20 @@ struct GameplayView: View {
 
     @State private var randomGIFName: String
 
-    let gifNames = ["gif1", "gif2", "gif3", "gif4"]
+    var gifNames = ["gif1", "gif2", "gif3", "gif4"]
+    let deviceType = UIDevice.current.userInterfaceIdiom
     
     init() {
         // Initialize randomGIFName here
+        if deviceType != .pad {
+            gifNames = ["gif1", "gif4"]
+        }
         _randomGIFName = State(initialValue: gifNames.randomElement() ?? "gif1")
     }
     
     var body: some View {
         ZStack {
             ARViewContainer(spawningZombiePage: $spawningZombiePage)
-                .ignoresSafeArea()
                 .overlay(alignment: .bottom) {
                     Button {
                         ARManager.shared.actionStream.send(.attackButton)
@@ -32,9 +35,9 @@ struct GameplayView: View {
                         Image("AttackBowButton")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 150, height: 150)
+                            .frame(width: UIScreen.main.bounds.width/8)
                     }
-                    .position(x: UIScreen.main.bounds.width - 150, y: UIScreen.main.bounds.height - 150)
+                    .position(x: UIScreen.main.bounds.width/1.12, y: deviceType == .pad ? UIScreen.main.bounds.height/1.18 :  UIScreen.main.bounds.height/1.3)
                     
                     Image(systemName: "plus")
                         .resizable()
@@ -44,34 +47,35 @@ struct GameplayView: View {
                 }
                 .navigationBarBackButtonHidden(true)
             
-            if showBackground {
-                ZStack {
-                    Color.white
-                        .ignoresSafeArea()
-                        .onAppear {
-                            startCountdown()
-                        }
-                    VStack {
-                        if randomGIFName == "gif4" {
-                            GIFImageView(gifName: $randomGIFName)
-                                .scaledToFit()
-                                .frame(height: 200)
-                        } else {
-                            GIFImageView(gifName: $randomGIFName)
-                                .scaledToFit()
-                                .frame(width: 100)
-                        }
-                        Text("Game will start in")
-                            .font(.title)
-                            .foregroundColor(.black)
-                        Text("\(remainingTime)")
-                            .font(.largeTitle)
-                            .bold()
-                            .foregroundColor(.black)
-                    }
-                }
-            }
+//            if showBackground {
+//                ZStack {
+//                    Color.white
+//                        .ignoresSafeArea()
+//                        .onAppear {
+//                            startCountdown()
+//                        }
+//                    VStack {
+//                        if randomGIFName == "gif4" {
+//                                GIFImageView(gifName: $randomGIFName)
+//                                    .scaledToFit()
+//                                    .frame(height: deviceType == .pad ? UIScreen.main.bounds.height / 5 : UIScreen.main.bounds.height / 2)
+//                        } else {
+//                            GIFImageView(gifName: $randomGIFName)
+//                                .scaledToFit()
+//                                .frame(width: UIScreen.main.bounds.width/6)
+//                        }
+//                        Text("Game will start in")
+//                            .font(deviceType == .pad ? .title : .title2)
+//                            .foregroundColor(.black)
+//                        Text("\(remainingTime)")
+//                            .font(deviceType == .pad ? .largeTitle: .title)
+//                            .bold()
+//                            .foregroundColor(.black)
+//                    }
+//                }
+//            }
         }
+        .ignoresSafeArea()
     }
     
     private func startCountdown() {
@@ -79,7 +83,7 @@ struct GameplayView: View {
             if remainingTime > 0 {
                 remainingTime -= 1
             } else {
-                withAnimation(.easeInOut(duration: 2)) {
+                withAnimation(.easeInOut(duration: 0.1)) {
                     showBackground = false
                 }
                 timer.invalidate()

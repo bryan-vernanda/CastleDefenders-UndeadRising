@@ -94,6 +94,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = [.horizontal, .vertical]
+        configuration.environmentTexturing = .automatic
 //        configuration.planeDetection = .horizontal
 
         // Run the view's session
@@ -142,7 +144,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         }
     }
     
-    func subscribeToActionStream(for node: SCNNode) {
+    private func subscribeToActionStream(for node: SCNNode) {
         ARManager.shared
             .actionStream
             .sink { [weak self] action in //to make sure no app crashing or memory leaks, use weak self
@@ -179,17 +181,17 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         spawnTimer?.resume()
     }
     
-    func spawnZombie(at position: SCNVector3, for parentNode: SCNNode) {
+    private func spawnZombie(at position: SCNVector3, for parentNode: SCNNode) {
         let zombie = Zombie(at: position)
         parentNode.addChildNode(zombie)
     }
     
-    func addCastle(for parentNode: SCNNode) {
+    private func addCastle(for parentNode: SCNNode) {
         let castle = Castle()
         parentNode.addChildNode(castle)
     }
     
-    func attackBowButton(for parentNode: SCNNode) {
+    private func attackBowButton(for parentNode: SCNNode) {
         guard let currentFrame = sceneView.session.currentFrame else { return }
         
         // Get the camera transform

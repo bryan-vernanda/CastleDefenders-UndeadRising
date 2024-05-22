@@ -11,6 +11,7 @@ struct TiltPhone: View {
     @ObservedObject private var accelManager = AccelometerManager.shared
     @State private var navigateToGameplayView: Bool = false
     private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    let deviceType = UIDevice.current.userInterfaceIdiom
     
     var body: some View {
         NavigationStack {
@@ -18,9 +19,9 @@ struct TiltPhone: View {
                 Image("HoldingIpadHorizontal")
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 300)
+                    .frame(width: deviceType == .pad ? UIScreen.main.bounds.width / 4.5 : UIScreen.main.bounds.width / 4)
                 Text("Please position your phone so that it looks like the above to play the game")
-                    .font(.title2)
+                    .font(deviceType == .pad ? .title : .body)
             }
             .navigationBarBackButtonHidden(true)
             .onReceive(timer) { _ in

@@ -10,6 +10,8 @@ import ARKit
 import SceneKit
 import MultipeerSession
 import Foundation
+import GameplayKit
+import Combine
 
 enum CollisionTypesMul: Int {
     case zombie = 1
@@ -24,23 +26,20 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     var multipeerSession: MultipeerSession?
     var sessionIDObservation: NSKeyValueObservation?
     
+    private var cancellable: Set<AnyCancellable> = []
+    private var spawnTimer: DispatchSourceTimer?
+    private var currentZPosition: Float = -5
+    private let randomSource = GKRandomSource()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        sceneView2 = ARManager2.shared.sceneView2
+        sceneView2 = ARManager2.shared2.sceneView2
         sceneView2.frame = self.view.frame
         self.view.addSubview(sceneView2)
         
         // Set the view's delegate
         sceneView2.delegate = self
-        
-        // Show statistics such as fps and timing information
-//        sceneView.showsStatistics = true
-        
-        // Show world anchor
-//        sceneView.debugOptions = .showWorldOrigin
-        
-//        sceneView.scene.physicsWorld.contactDelegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -52,10 +51,18 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         
         sceneView2.session.delegate = self //otherwise session delegate below won't be called
         
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(recognizer:)))
-        sceneView2.addGestureRecognizer(tapGestureRecognizer)
+        subscribeToActionStream()
+        
+//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(recognizer:)))
+//        sceneView2.addGestureRecognizer(tapGestureRecognizer)
         
         UIApplication.shared.isIdleTimerDisabled = true
+    }
+    
+    func addLaserRedAnchor() {
+        guard let currentFrame = sceneView2.session.currentFrame else { return }
+        let anchor = ARAnchor(name: "laserRed", transform: currentFrame.camera.transform)
+        sceneView2.session.add(anchor: anchor)
     }
     
     func setupARView() {
@@ -81,33 +88,77 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             self.receivedData, peerJoinedHandler: self.peerJoined, peerLeftHandler: self.peerLeft, peerDiscoveredHandler: self.peerDiscovered)
     }
     
-    @objc func handleTap(recognizer: UITapGestureRecognizer) {
-        guard let currentFrame = sceneView2.session.currentFrame else { return }
-        
-//        var translation = matrix_identity_float4x4
-//        translation.columns.3.z = -0.5
-//        let transform = simd_mul(currentFrame.camera.transform, translation)
-        
-        let anchor = ARAnchor(name: "laserRed", transform: currentFrame.camera.transform)
-        sceneView2.session.add(anchor: anchor)
-    }
-    
-    func attackBowButton(for parentNode: SCNNode, pass anchor: ARAnchor) {
+//    @objc func handleTap(recognizer: UITapGestureRecognizer) {
 //        guard let currentFrame = sceneView2.session.currentFrame else { return }
-
-        // Get the position and orientation from the anchor
+//        
+////        var translation = matrix_identity_float4x4
+////        translation.columns.3.z = -0.5
+////        let transform = simd_mul(currentFrame.camera.transform, translation)
+//        
+//        let anchor = ARAnchor(name: "laserRed", transform: currentFrame.camera.transform)
+//        sceneView2.session.add(anchor: anchor)
+//    }
+    
+    //ini pasti bisa tapi ontap
+    private func attackBowButton(for parentNode: SCNNode, pass anchor: ARAnchor) {
+        // Get the position from the anchor's transform
         let position = SCNVector3(anchor.transform.columns.3.x,
                                   anchor.transform.columns.3.y,
                                   anchor.transform.columns.3.z)
 
-        let orientation = SCNVector3(-anchor.transform.columns.2.x, -anchor.transform.columns.2.y, -anchor.transform.columns.2.z)
+        // Calculate the forward direction from the anchor's orientation
+        let orientation = SCNVector3(-anchor.transform.columns.2.x,
+                                     -anchor.transform.columns.2.y,
+                                     -anchor.transform.columns.2.z)
+
+        // Calculate a position in front of the anchor by moving forward from the anchor's position
+        let forwardPosition = SCNVector3(position.x + orientation.x,
+                                         position.y + orientation.y,
+                                         position.z + orientation.z)
 
         // Pass the sessionIdentifier to the Arrow
-        let arrow = ArrowMultiplayer(at: position, at: orientation, sessionIdentifier: anchor.sessionIdentifier)
-        arrow.look(at: SCNVector3(position.x + orientation.x, position.y + orientation.y, position.z + orientation.z))
+        let arrow = ArrowMultiplayer(at: forwardPosition, at: orientation, sessionIdentifier: anchor.sessionIdentifier)
+        arrow.look(at: SCNVector3(forwardPosition.x + orientation.x, forwardPosition.y + orientation.y, forwardPosition.z + orientation.z))
 
         // Add the arrow to the scene
         parentNode.addChildNode(arrow)
+    }
+    
+    private func startSpawningZombies(for parentNode: SCNNode) {
+        // Create a dispatch timer to spawn zombies every 2 seconds
+        spawnTimer = DispatchSource.makeTimerSource()
+        spawnTimer?.schedule(deadline: .now(), repeating: 2.0)
+        spawnTimer?.setEventHandler { [weak self] in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                // Generate a random x position between -5 and 5
+                let randomXPosition = Float(self.randomSource.nextInt(upperBound: 11)) - 5.0
+//                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
+                
+                // Spawn a zombie at the current position
+                self.spawnZombie(at: SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition), for: parentNode)
+            }
+        }
+        spawnTimer?.resume()
+    }
+    
+    private func spawnZombie(at position: SCNVector3, for parentNode: SCNNode) {
+        let zombie = Zombie(at: position)
+        parentNode.addChildNode(zombie)
+    }
+    
+    private func subscribeToActionStream() {
+        ARManager2.shared2
+            .actionStream2
+            .sink { [weak self] action in
+                guard let self = self else { return }
+                switch action {
+                    case .attackButton:
+                        self.addLaserRedAnchor()
+                }
+            }
+            .store(in: &cancellable)
     }
 
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
@@ -129,6 +180,8 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                 sphereNode.transform = SCNMatrix4(participantAnchor.transform)
 
                 sceneView2.scene.rootNode.addChildNode(sphereNode)
+                
+//                startSpawningZombies(for: sceneView2.scene.rootNode)
             }
         }
     }

@@ -17,7 +17,6 @@ struct MainView: View {
             ZStack {
                 if !navigateToGameplayView {
                     ARViewContainer(spawningZombiePage: $spawningZombiePage)
-                        .ignoresSafeArea()
                 }
                 
                 VStack(alignment: .center) {
@@ -27,7 +26,7 @@ struct MainView: View {
                         Image("SingeplayerButton")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 700)
+                            .frame(width: UIScreen.main.bounds.width/1.959)
                     }
                     .padding(.bottom)
                     
@@ -37,7 +36,7 @@ struct MainView: View {
                         Image("MultiplayerButton")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 700)
+                            .frame(width: UIScreen.main.bounds.width/1.959)
                     }
                 }
             }
@@ -47,7 +46,10 @@ struct MainView: View {
             .navigationDestination(isPresented: $navigateToMultiplayerView) {
                 MultiplayerView()
             }
+            .ignoresSafeArea()
         }
+ 
+//        .ignoresSafeArea()
     }
 }
 
