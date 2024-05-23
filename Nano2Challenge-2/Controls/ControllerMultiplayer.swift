@@ -20,7 +20,7 @@ import MultipeerConnectivity
 //    case arrow = 4
 //}
 
-class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDelegate, SCNPhysicsContactDelegate {
+class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDelegate, SCNPhysicsContactDelegate, ObservableObject {
     
     @IBOutlet var sceneView2: ARSCNView!
     
@@ -28,6 +28,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     var sessionIDObservation: NSKeyValueObservation?
     
     private var cancellable: Set<AnyCancellable> = []
+    private var cancellable1: Set<AnyCancellable> = []
     private var spawnTimer: DispatchSourceTimer?
     private var currentZPosition: Float = -5
     private let randomSource = GKRandomSource()
@@ -35,6 +36,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     private var isCastleAdded = false // Track if the castle has been added
     private var isSpawningZombies = false // Track if zombie spawning has started
     private var castleTransform: simd_float4x4?
+    private var previousCastleTransform: simd_float4x4?
     private var indicator: Bool = true
     
     @Published var message: String = ""
@@ -96,7 +98,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                 guard let self = self else { return }
                 self.message = newValue
             }
-            .store(in: &cancellable)
+            .store(in: &cancellable1)
     }
     
     func addLaserRedAnchor() {
@@ -154,25 +156,25 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     }
     
     private func startSpawningZombies(for parentNode: SCNNode) {
-        guard !isSpawningZombies else { return }
-        isSpawningZombies = true
-        
-        // Create a dispatch timer to spawn zombies every 2 seconds
-        spawnTimer = DispatchSource.makeTimerSource()
-        spawnTimer?.schedule(deadline: .now(), repeating: 2.0)
-        spawnTimer?.setEventHandler { [weak self] in
-            guard let self = self else { return }
-            
-            DispatchQueue.main.async {
-                // Generate a random x position between -5 and 5
-                let randomXPosition = Float(self.randomSource.nextInt(upperBound: 11)) - 5.0
-//                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
+        if !isSpawningZombies {
+            isSpawningZombies = true
+            // Create a dispatch timer to spawn zombies every 2 seconds
+            spawnTimer = DispatchSource.makeTimerSource()
+            spawnTimer?.schedule(deadline: .now(), repeating: 2.0)
+            spawnTimer?.setEventHandler { [weak self] in
+                guard let self = self else { return }
                 
-                // Spawn a zombie at the current position
-                self.spawnZombie(at: SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition), for: parentNode)
+                DispatchQueue.main.async {
+                    // Generate a random x position between -5 and 5
+                    let randomXPosition = Float(self.randomSource.nextInt(upperBound: 11)) - 5.0
+    //                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
+                    
+                    // Spawn a zombie at the current position
+                    self.spawnZombie(at: SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition), for: parentNode)
+                }
             }
+            spawnTimer?.resume()
         }
-        spawnTimer?.resume()
     }
     
     private func spawnZombie(at position: SCNVector3, for parentNode: SCNNode) {
@@ -181,11 +183,12 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     }
     
     private func addCastle(for parentNode: SCNNode) {
-        guard !isCastleAdded else { return }
-        isCastleAdded = true
-        
-        let castle = Castle()
-        parentNode.addChildNode(castle)
+        if !isCastleAdded {
+            isCastleAdded = true
+            
+            let castle = Castle()
+            parentNode.addChildNode(castle)
+        }
     }
     
     private func subscribeToActionStream() {
@@ -241,14 +244,22 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
 
             if let participantAnchor = anchor as? ARParticipantAnchor {
                 DispatchQueue.main.async {
-                    if self.indicator {
+                    if self.indicator { // player 1
                         self.castleTransform = participantAnchor.transform
+                        self.previousCastleTransform = participantAnchor.transform
                         self.indicator = false
+                    } else { // player 2
+                        if let previousTransform = self.castleTransform {
+                            // Here we concatenate the new transform with the previous one.
+                            // This is a simple example, in real-world scenarios, you might need a more complex transformation logic
+                            self.castleTransform = participantAnchor.transform + previousTransform
+                        }
                     }
                     
-                    if let castleTransform = self.castleTransform {
-                        let castleAnchor = ARAnchor(name: "castleZombieAnchor", transform: castleTransform)
+                    if let castleTransforms = self.castleTransform {
+                        let castleAnchor = ARAnchor(name: "castleZombieAnchor", transform: castleTransforms)
                         self.sceneView2.session.add(anchor: castleAnchor)
+                        self.castleTransform = self.previousCastleTransform
                     } else {
                         print("Error: castleTransform is nil")
                     }
@@ -256,12 +267,18 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             }
             
             if anchor.name == "castleZombieAnchor" {
+                let dispatchGroup = DispatchGroup()
+
+                dispatchGroup.enter()
                 DispatchQueue.main.async {
                     print("successfully connected with another user!")
                     self.message = "Established joint experience with other players."
                     self.sceneView2.debugOptions = []
-                    
-                    // Add castle and start spawning zombies
+                    dispatchGroup.leave()
+                }
+
+                dispatchGroup.notify(queue: .main) {
+                    // Add castle and start spawning zombies only after the message is updated
                     self.addCastle(for: self.sceneView2.scene.rootNode)
                     self.startSpawningZombies(for: self.sceneView2.scene.rootNode)
                 }

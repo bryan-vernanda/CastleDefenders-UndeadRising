@@ -19,7 +19,7 @@ struct ARViewContainer: UIViewControllerRepresentable {
 }
 
 struct ARViewContainerMultiplayer: UIViewControllerRepresentable {
-    @Binding var multiplayer: ControllerMultiplayer
+    @ObservedObject var multiplayer: ControllerMultiplayer
     
     func makeUIViewController(context: Context) -> ControllerMultiplayer {
         return multiplayer
