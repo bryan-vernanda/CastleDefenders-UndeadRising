@@ -64,7 +64,7 @@ struct GameplayView: View {
                                 .scaledToFit()
                                 .frame(width: UIScreen.main.bounds.width/6)
                         }
-                        Text("Game will start in")
+                        Text("Game will start in...")
                             .font(deviceType == .pad ? .title : .title2)
                             .foregroundColor(.black)
                         Text("\(remainingTime)")

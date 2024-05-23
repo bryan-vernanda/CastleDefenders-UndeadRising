@@ -153,6 +153,11 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
 
         // Add the arrow to the scene
         parentNode.addChildNode(arrow)
+        
+        //remove arrow after few seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { // to remove scene every time deploy the arrow so reduce memory
+            arrow.removeFromParentNode()
+        }
     }
     
     private func startSpawningZombies(for parentNode: SCNNode) {
@@ -167,10 +172,14 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                 DispatchQueue.main.async {
                     // Generate a random x position between -5 and 5
                     let randomXPosition = Float(self.randomSource.nextInt(upperBound: 11)) - 5.0
+                    let zombiePosition = SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition)
     //                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
                     
+                    // Broadcast the position to other peers
+                    self.broadcastZombiePosition(zombiePosition)
+                    
                     // Spawn a zombie at the current position
-                    self.spawnZombie(at: SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition), for: parentNode)
+                    self.spawnZombie(at: zombiePosition, for: parentNode)
                 }
             }
             spawnTimer?.resume()
@@ -188,8 +197,22 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             
             let castle = Castle()
             parentNode.addChildNode(castle)
+            
+//            if let castleTransform = castleTransform {
+//                broadcastCastlePosition(castleTransform)
+//            }
         }
     }
+    
+//    private func addCastle(at transform: simd_float4x4, for parentNode: SCNNode) {
+//        if !isCastleAdded {
+//            isCastleAdded = true
+//            
+//            let castle = Castle()
+//            castle.simdTransform = transform
+//            parentNode.addChildNode(castle)
+//        }
+//    }
     
     private func subscribeToActionStream() {
         ARManager2.shared2
@@ -244,17 +267,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
 
             if let participantAnchor = anchor as? ARParticipantAnchor {
                 DispatchQueue.main.async {
-                    if self.indicator { // player 1
-                        self.castleTransform = participantAnchor.transform
-                        self.previousCastleTransform = participantAnchor.transform
-                        self.indicator = false
-                    } else { // player 2
-                        if let previousTransform = self.castleTransform {
-                            // Here we concatenate the new transform with the previous one.
-                            // This is a simple example, in real-world scenarios, you might need a more complex transformation logic
-                            self.castleTransform = participantAnchor.transform + previousTransform
-                        }
-                    }
+                    self.castleTransform = participantAnchor.transform
                     
                     if let castleTransforms = self.castleTransform {
                         let castleAnchor = ARAnchor(name: "castleZombieAnchor", transform: castleTransforms)
@@ -279,8 +292,10 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
 
                 dispatchGroup.notify(queue: .main) {
                     // Add castle and start spawning zombies only after the message is updated
-                    self.addCastle(for: self.sceneView2.scene.rootNode)
-                    self.startSpawningZombies(for: self.sceneView2.scene.rootNode)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 11.1) {
+                        self.addCastle(for: self.sceneView2.scene.rootNode)
+                        self.startSpawningZombies(for: self.sceneView2.scene.rootNode)
+                    }
                 }
             }
         }
@@ -299,14 +314,34 @@ extension ControllerMultiplayer {
         }
     }
     
-    func receivedData(_ data: Data, from peer: PeerID) {
+    private func broadcastZombiePosition(_ position: SCNVector3) {
+        guard let multipeerSession = multipeerSession else { return }
+        // Make a mutable copy of position
+        var mutablePosition = position
+        
+        // Create data from the mutable copy
+        let positionData = Data(bytes: &mutablePosition, count: MemoryLayout<SCNVector3>.size)
+        
+        multipeerSession.sendToAllPeers(positionData, reliably: true)
+    }
+    
+//    private func broadcastCastlePosition(_ transform: simd_float4x4) {
+//        guard let multipeerSession = self.multipeerSession else { return }
+//        var transforms = transform
+//        let transformData = Data(bytes: &transforms, count: MemoryLayout<simd_float4x4>.size)
+//        multipeerSession.sendToAllPeers(transformData, reliably: true)
+//    }
+    
+    func receivedData(_ data: Data, from peer: MCPeerID) {
         guard let multipeerSession = multipeerSession else { return }
         
+        // Handle collaboration data
         if let collaborationData = try? NSKeyedUnarchiver.unarchivedObject(ofClass: ARSession.CollaborationData.self, from: data) {
             sceneView2.session.update(with: collaborationData)
             return
         }
         
+        // Handle session ID data
         let sessionIDCommandString = "SessionID:"
         if let commandString = String(data: data, encoding: .utf8), commandString.starts(with: sessionIDCommandString) {
             let newSessionID = String(commandString[commandString.index(commandString.startIndex, offsetBy: sessionIDCommandString.count)...])
@@ -317,8 +352,28 @@ extension ControllerMultiplayer {
             }
             
             multipeerSession.peerSessionIDs[peer] = newSessionID
+            return
         }
+        
+        // Handle SCNVector3 position data
+        if data.count == MemoryLayout<SCNVector3>.size {
+            var position = SCNVector3()
+            _ = withUnsafeMutableBytes(of: &position) { data.copyBytes(to: $0) }
+            DispatchQueue.main.async {
+                self.spawnZombie(at: position, for: self.sceneView2.scene.rootNode)
+            }
+        }
+        
+        // Handle simd_float4x4 transform data
+//        if data.count == MemoryLayout<simd_float4x4>.size {
+//            var transform = simd_float4x4()
+//            _ = withUnsafeMutableBytes(of: &transform) { data.copyBytes(to: $0) }
+//            DispatchQueue.main.async {
+//                self.addCastle(at: transform, for: self.sceneView2.scene.rootNode)
+//            }
+//        }
     }
+
     
     func peerDiscovered(_ peer: PeerID) -> Bool {
         guard let multipeerSession = multipeerSession else { return false }
@@ -378,5 +433,25 @@ extension ControllerMultiplayer {
         } else {
             print("Deferred sending collaboration to later because there are no peers.")
         }
+    }
+}
+
+extension UUID {
+    /**
+     - Tag: ToRandomColor
+    Pseudo-randomly return one of several fixed standard colors, based on this UUID's first four bytes.
+    */
+    func toRandomColor() -> UIColor {
+        var firstFourUUIDBytesAsUInt32: UInt32 = 0
+        let data = withUnsafePointer(to: self) {
+            return Data(bytes: $0, count: MemoryLayout.size(ofValue: self))
+        }
+        _ = withUnsafeMutableBytes(of: &firstFourUUIDBytesAsUInt32, { data.copyBytes(to: $0) })
+
+        let colors: [UIColor] = [.red, .green, .blue, .yellow, .magenta, .cyan, .purple,
+        .orange, .brown, .lightGray, .gray, .darkGray, .black, .white]
+        
+        let randomNumber = Int(firstFourUUIDBytesAsUInt32) % colors.count
+        return colors[randomNumber]
     }
 }
