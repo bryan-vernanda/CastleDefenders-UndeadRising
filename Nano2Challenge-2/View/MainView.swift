@@ -44,7 +44,7 @@ struct MainView: View {
                 TiltPhone()
             }
             .navigationDestination(isPresented: $navigateToMultiplayerView) {
-                MultiplayerView()
+                MultiplayerMainView()
             }
             .ignoresSafeArea()
         }

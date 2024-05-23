@@ -8,10 +8,13 @@
 import SwiftUI
 
 struct MultiplayerView: View {
+    @State private var multiplayer = ControllerMultiplayer()
+    let deviceType = UIDevice.current.userInterfaceIdiom
+//    @State private var activateDebugOptions: Bool = true
+    
     var body: some View {
-        let deviceType = UIDevice.current.userInterfaceIdiom
         ZStack {
-            ARViewContainerMultiplayer()
+            ARViewContainerMultiplayer(multiplayer: $multiplayer)
                 .overlay(alignment: .bottom) {
                     Button {
                         ARManager2.shared2.actionStream2.send(.attackButton)

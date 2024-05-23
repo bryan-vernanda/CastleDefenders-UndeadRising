@@ -13,6 +13,8 @@
 		938F1D192BF7303B00974243 /* ARManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938F1D182BF7303B00974243 /* ARManager.swift */; };
 		938F1D212BF7889700974243 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938F1D202BF7889700974243 /* MainView.swift */; };
 		938F1D232BF788BB00974243 /* Arrow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 938F1D222BF788BB00974243 /* Arrow.swift */; };
+		93B4CA682BFEDE8100EB5CCF /* MultiplayerMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B4CA672BFEDE8100EB5CCF /* MultiplayerMainView.swift */; };
+		93B4CA6A2BFF29C500EB5CCF /* MultipeerSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B4CA692BFF29C500EB5CCF /* MultipeerSession.swift */; };
 		93E060A92BF4A99400B986CB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E060A82BF4A99400B986CB /* AppDelegate.swift */; };
 		93E060AB2BF4A99400B986CB /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = 93E060AA2BF4A99400B986CB /* art.scnassets */; };
 		93E060AD2BF4A99400B986CB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E060AC2BF4A99400B986CB /* ViewController.swift */; };
@@ -28,7 +30,6 @@
 		93E5F9742BFCDF8D000A2662 /* ControllerMultiplayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9732BFCDF8D000A2662 /* ControllerMultiplayer.swift */; };
 		93E5F9762BFCE027000A2662 /* ArrowMultiplayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9752BFCE027000A2662 /* ArrowMultiplayer.swift */; };
 		93E5F9782BFCE120000A2662 /* MultiplayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9772BFCE120000A2662 /* MultiplayerView.swift */; };
-		93E5F97C2BFCEB19000A2662 /* MultipeerSession in Frameworks */ = {isa = PBXBuildFile; productRef = 93E5F97B2BFCEB19000A2662 /* MultipeerSession */; };
 		93F7DAC62BF90C270045A924 /* GameplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F7DAC52BF90C270045A924 /* GameplayView.swift */; };
 		93F7DAC82BF90C5D0045A924 /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F7DAC72BF90C5D0045A924 /* ARViewContainer.swift */; };
 /* End PBXBuildFile section */
@@ -40,6 +41,8 @@
 		938F1D182BF7303B00974243 /* ARManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARManager.swift; sourceTree = "<group>"; };
 		938F1D202BF7889700974243 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		938F1D222BF788BB00974243 /* Arrow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Arrow.swift; sourceTree = "<group>"; };
+		93B4CA672BFEDE8100EB5CCF /* MultiplayerMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerMainView.swift; sourceTree = "<group>"; };
+		93B4CA692BFF29C500EB5CCF /* MultipeerSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipeerSession.swift; sourceTree = "<group>"; };
 		93E060A52BF4A99400B986CB /* Nano2Challenge-2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Nano2Challenge-2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		93E060A82BF4A99400B986CB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		93E060AA2BF4A99400B986CB /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -66,7 +69,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93E5F97C2BFCEB19000A2662 /* MultipeerSession in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -92,6 +94,7 @@
 				93E5F8A42BFA0729000A2662 /* TiltPhone.swift */,
 				93E5F8A62BFA3396000A2662 /* GIFImageView.swift */,
 				93E5F9772BFCE120000A2662 /* MultiplayerView.swift */,
+				93B4CA672BFEDE8100EB5CCF /* MultiplayerMainView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -148,6 +151,7 @@
 				93F7DAC72BF90C5D0045A924 /* ARViewContainer.swift */,
 				93E5F8A22BF9FCB0000A2662 /* AccelometerManager.swift */,
 				93E5F9732BFCDF8D000A2662 /* ControllerMultiplayer.swift */,
+				93B4CA692BFF29C500EB5CCF /* MultipeerSession.swift */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -169,7 +173,6 @@
 			);
 			name = "Nano2Challenge-2";
 			packageProductDependencies = (
-				93E5F97B2BFCEB19000A2662 /* MultipeerSession */,
 			);
 			productName = "Nano2Challenge-2";
 			productReference = 93E060A52BF4A99400B986CB /* Nano2Challenge-2.app */;
@@ -200,7 +203,6 @@
 			);
 			mainGroup = 93E0609C2BF4A99400B986CB;
 			packageReferences = (
-				93E5F97A2BFCEB19000A2662 /* XCRemoteSwiftPackageReference "multipeer-session" */,
 			);
 			productRefGroup = 93E060A62BF4A99400B986CB /* Products */;
 			projectDirPath = "";
@@ -242,10 +244,12 @@
 				938F1D122BF6517C00974243 /* Castle.swift in Sources */,
 				938F1D152BF6519B00974243 /* Zombie.swift in Sources */,
 				93E060AD2BF4A99400B986CB /* ViewController.swift in Sources */,
+				93B4CA6A2BFF29C500EB5CCF /* MultipeerSession.swift in Sources */,
 				93E5F9742BFCDF8D000A2662 /* ControllerMultiplayer.swift in Sources */,
 				93F7DAC82BF90C5D0045A924 /* ARViewContainer.swift in Sources */,
 				93E5F8A52BFA0729000A2662 /* TiltPhone.swift in Sources */,
 				938F1D232BF788BB00974243 /* Arrow.swift in Sources */,
+				93B4CA682BFEDE8100EB5CCF /* MultiplayerMainView.swift in Sources */,
 				93E5F8A72BFA3396000A2662 /* GIFImageView.swift in Sources */,
 				938F1D192BF7303B00974243 /* ARManager.swift in Sources */,
 				93E060A92BF4A99400B986CB /* AppDelegate.swift in Sources */,
@@ -477,25 +481,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		93E5F97A2BFCEB19000A2662 /* XCRemoteSwiftPackageReference "multipeer-session" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/RyanKopinskyLLC/multipeer-session";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		93E5F97B2BFCEB19000A2662 /* MultipeerSession */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 93E5F97A2BFCEB19000A2662 /* XCRemoteSwiftPackageReference "multipeer-session" */;
-			productName = MultipeerSession;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 93E0609D2BF4A99400B986CB /* Project object */;
 }

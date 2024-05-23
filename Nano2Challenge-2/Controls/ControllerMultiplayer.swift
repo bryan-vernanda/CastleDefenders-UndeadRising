@@ -8,10 +8,11 @@
 import UIKit
 import ARKit
 import SceneKit
-import MultipeerSession
 import Foundation
 import GameplayKit
 import Combine
+import SwiftUI
+import MultipeerConnectivity
 
 //enum CollisionTypesMul: Int {
 //    case zombie = 1
@@ -33,6 +34,10 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     
     private var isCastleAdded = false // Track if the castle has been added
     private var isSpawningZombies = false // Track if zombie spawning has started
+    private var castleTransform: simd_float4x4?
+    private var indicator: Bool = true
+    
+    @Published var message: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +49,11 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         // Set the view's delegate
         sceneView2.delegate = self
         
+        sceneView2.debugOptions = ARSCNDebugOptions.showFeaturePoints
+        
         sceneView2.scene.physicsWorld.contactDelegate = self
+        
+        setupMessageObserver()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -59,6 +68,35 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         subscribeToActionStream()
         
         UIApplication.shared.isIdleTimerDisabled = true
+        
+        message = "There are no players! Invite others to join with you."
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Invalidate the timer when the view disappears
+        spawnTimer?.cancel()
+        spawnTimer = nil
+        
+        // Pause the view's session
+        sceneView2.session.pause()
+        
+        // Stop and reset the AR session
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.isLightEstimationEnabled = true
+        sceneView2.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        sceneView2.removeFromSuperview()
+    }
+    
+    private func setupMessageObserver() {
+        $message
+            .receive(on: DispatchQueue.main) // Ensure updates are received on the main thread
+            .sink { [weak self] newValue in
+                guard let self = self else { return }
+                self.message = newValue
+            }
+            .store(in: &cancellable)
     }
     
     func addLaserRedAnchor() {
@@ -202,25 +240,34 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             }
 
             if let participantAnchor = anchor as? ARParticipantAnchor {
-                print("successfully connected with another user!")
-
-//                let sphere = SCNSphere(radius: 0.03)
-//                let material = SCNMaterial()
-//                material.diffuse.contents = UIColor.red
-//                sphere.materials = [material]
-//
-//                let sphereNode = SCNNode(geometry: sphere)
-//                sphereNode.transform = SCNMatrix4(participantAnchor.transform)
-//
-//                sceneView2.scene.rootNode.addChildNode(sphereNode)
-                
-                //add castle and zombie
-                addCastle(for: sceneView2.scene.rootNode)
-                startSpawningZombies(for: sceneView2.scene.rootNode)
+                DispatchQueue.main.async {
+                    if self.indicator {
+                        self.castleTransform = participantAnchor.transform
+                        self.indicator = false
+                    }
+                    
+                    if let castleTransform = self.castleTransform {
+                        let castleAnchor = ARAnchor(name: "castleZombieAnchor", transform: castleTransform)
+                        self.sceneView2.session.add(anchor: castleAnchor)
+                    } else {
+                        print("Error: castleTransform is nil")
+                    }
+                }
+            }
+            
+            if anchor.name == "castleZombieAnchor" {
+                DispatchQueue.main.async {
+                    print("successfully connected with another user!")
+                    self.message = "Established joint experience with other players."
+                    self.sceneView2.debugOptions = []
+                    
+                    // Add castle and start spawning zombies
+                    self.addCastle(for: self.sceneView2.scene.rootNode)
+                    self.startSpawningZombies(for: self.sceneView2.scene.rootNode)
+                }
             }
         }
     }
-
 }
 
 //MARK: - MultipeerSession
@@ -261,7 +308,8 @@ extension ControllerMultiplayer {
         
         if multipeerSession.connectedPeers.count > 2 {
             // Do not accept more than four users in the experience.
-           print("A fifth player wants to join.\nThe game is currently limited to two players")
+           print("A third player wants to join.The game is currently limited to two players")
+//            message = "A third player wants to join. The game is currently limited to two players"
             return false
         } else {
             return true
@@ -269,7 +317,10 @@ extension ControllerMultiplayer {
     }
     
     func peerJoined(_ peer: PeerID) {
-        print("A player wants to join the game. Hold the devices next to each other.")
+        DispatchQueue.main.async {
+            print("A player wants to join the game. Hold the devices next to each other.")
+            self.message = "A player wants to join the game. Hold the devices next to each other."
+        }
         // Provide your session ID to the new user so they can keep track of your anchors.
         sendARSessionIDTo(peers: [peer])
     }
@@ -277,7 +328,10 @@ extension ControllerMultiplayer {
     func peerLeft(_ peer: PeerID) {
         guard let multipeerSession = multipeerSession else { return }
         
-        print("A player has left the game")
+        DispatchQueue.main.async {
+            print("A player has left the game")
+            self.message = "A player has left the game."
+        }
         
         // Remove all ARAnchors associated with the peer that just left the experience.
         if let sessionID = multipeerSession.peerSessionIDs[peer] {

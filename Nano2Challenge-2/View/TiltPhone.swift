@@ -20,7 +20,7 @@ struct TiltPhone: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: deviceType == .pad ? UIScreen.main.bounds.width / 4.5 : UIScreen.main.bounds.width / 4)
-                Text("Please position your phone so that it looks like the above to play the game")
+                Text("Hold your device upright with the screen facing you.")
                     .font(deviceType == .pad ? .title : .body)
             }
             .navigationBarBackButtonHidden(true)

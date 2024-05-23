@@ -19,10 +19,10 @@ struct ARViewContainer: UIViewControllerRepresentable {
 }
 
 struct ARViewContainerMultiplayer: UIViewControllerRepresentable {
-//    @Binding var spawningZombiePage: Int
+    @Binding var multiplayer: ControllerMultiplayer
     
     func makeUIViewController(context: Context) -> ControllerMultiplayer {
-        return ControllerMultiplayer()
+        return multiplayer
     }
     
     func updateUIViewController(_ uiViewController: ControllerMultiplayer, context: Context) {
