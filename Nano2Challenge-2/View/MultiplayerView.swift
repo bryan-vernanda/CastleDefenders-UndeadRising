@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct MultiplayerView: View {
-    let deviceType = UIDevice.current.userInterfaceIdiom
-    
     var body: some View {
+        let deviceType = UIDevice.current.userInterfaceIdiom
         ZStack {
-            MultiplayerView()
+            ARViewContainerMultiplayer()
                 .overlay(alignment: .bottom) {
                     Button {
-                        ARManager.shared.actionStream.send(.attackButton)
+                        ARManager2.shared2.actionStream2.send(.attackButton)
                     } label: {
                         Image("AttackBowButton")
                             .resizable()

@@ -21,9 +21,9 @@ class ArrowMultiplayer: SCNNode {
 
         self.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(node: self, options: nil))
         self.physicsBody?.isAffectedByGravity = true
-        self.physicsBody?.categoryBitMask = CollisionTypesMul.arrow.rawValue
-//        self.physicsBody?.contactTestBitMask = CollisionTypes.zombie.rawValue
-//        self.physicsBody?.collisionBitMask = 0
+        self.physicsBody?.categoryBitMask = CollisionTypes.arrow.rawValue
+        self.physicsBody?.contactTestBitMask = CollisionTypes.zombie.rawValue
+        self.physicsBody?.collisionBitMask = 0
 
         if let arrowNode = arrowScene.rootNode.childNode(withName: "scene", recursively: true) {
             self.addChildNode(arrowNode)

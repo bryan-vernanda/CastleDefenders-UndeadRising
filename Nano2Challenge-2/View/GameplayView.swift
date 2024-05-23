@@ -47,33 +47,33 @@ struct GameplayView: View {
                 }
                 .navigationBarBackButtonHidden(true)
             
-//            if showBackground {
-//                ZStack {
-//                    Color.white
-//                        .ignoresSafeArea()
-//                        .onAppear {
-//                            startCountdown()
-//                        }
-//                    VStack {
-//                        if randomGIFName == "gif4" {
-//                                GIFImageView(gifName: $randomGIFName)
-//                                    .scaledToFit()
-//                                    .frame(height: deviceType == .pad ? UIScreen.main.bounds.height / 5 : UIScreen.main.bounds.height / 2)
-//                        } else {
-//                            GIFImageView(gifName: $randomGIFName)
-//                                .scaledToFit()
-//                                .frame(width: UIScreen.main.bounds.width/6)
-//                        }
-//                        Text("Game will start in")
-//                            .font(deviceType == .pad ? .title : .title2)
-//                            .foregroundColor(.black)
-//                        Text("\(remainingTime)")
-//                            .font(deviceType == .pad ? .largeTitle: .title)
-//                            .bold()
-//                            .foregroundColor(.black)
-//                    }
-//                }
-//            }
+            if showBackground {
+                ZStack {
+                    Color.white
+                        .ignoresSafeArea()
+                        .onAppear {
+                            startCountdown()
+                        }
+                    VStack {
+                        if randomGIFName == "gif4" {
+                                GIFImageView(gifName: $randomGIFName)
+                                    .scaledToFit()
+                                    .frame(height: deviceType == .pad ? UIScreen.main.bounds.height / 5 : UIScreen.main.bounds.height / 2)
+                        } else {
+                            GIFImageView(gifName: $randomGIFName)
+                                .scaledToFit()
+                                .frame(width: UIScreen.main.bounds.width/6)
+                        }
+                        Text("Game will start in")
+                            .font(deviceType == .pad ? .title : .title2)
+                            .foregroundColor(.black)
+                        Text("\(remainingTime)")
+                            .font(deviceType == .pad ? .largeTitle: .title)
+                            .bold()
+                            .foregroundColor(.black)
+                    }
+                }
+            }
         }
         .ignoresSafeArea()
     }

@@ -13,13 +13,13 @@ import Foundation
 import GameplayKit
 import Combine
 
-enum CollisionTypesMul: Int {
-    case zombie = 1
-    case castle = 2
-    case arrow = 4
-}
+//enum CollisionTypesMul: Int {
+//    case zombie = 1
+//    case castle = 2
+//    case arrow = 4
+//}
 
-class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDelegate {
+class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDelegate, SCNPhysicsContactDelegate {
     
     @IBOutlet var sceneView2: ARSCNView!
     
@@ -31,6 +31,9 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     private var currentZPosition: Float = -5
     private let randomSource = GKRandomSource()
     
+    private var isCastleAdded = false // Track if the castle has been added
+    private var isSpawningZombies = false // Track if zombie spawning has started
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,6 +43,8 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         
         // Set the view's delegate
         sceneView2.delegate = self
+        
+        sceneView2.scene.physicsWorld.contactDelegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -52,9 +57,6 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         sceneView2.session.delegate = self //otherwise session delegate below won't be called
         
         subscribeToActionStream()
-        
-//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(recognizer:)))
-//        sceneView2.addGestureRecognizer(tapGestureRecognizer)
         
         UIApplication.shared.isIdleTimerDisabled = true
     }
@@ -88,17 +90,6 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             self.receivedData, peerJoinedHandler: self.peerJoined, peerLeftHandler: self.peerLeft, peerDiscoveredHandler: self.peerDiscovered)
     }
     
-//    @objc func handleTap(recognizer: UITapGestureRecognizer) {
-//        guard let currentFrame = sceneView2.session.currentFrame else { return }
-//        
-////        var translation = matrix_identity_float4x4
-////        translation.columns.3.z = -0.5
-////        let transform = simd_mul(currentFrame.camera.transform, translation)
-//        
-//        let anchor = ARAnchor(name: "laserRed", transform: currentFrame.camera.transform)
-//        sceneView2.session.add(anchor: anchor)
-//    }
-    
     //ini pasti bisa tapi ontap
     private func attackBowButton(for parentNode: SCNNode, pass anchor: ARAnchor) {
         // Get the position from the anchor's transform
@@ -125,6 +116,9 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     }
     
     private func startSpawningZombies(for parentNode: SCNNode) {
+        guard !isSpawningZombies else { return }
+        isSpawningZombies = true
+        
         // Create a dispatch timer to spawn zombies every 2 seconds
         spawnTimer = DispatchSource.makeTimerSource()
         spawnTimer?.schedule(deadline: .now(), repeating: 2.0)
@@ -148,6 +142,14 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         parentNode.addChildNode(zombie)
     }
     
+    private func addCastle(for parentNode: SCNNode) {
+        guard !isCastleAdded else { return }
+        isCastleAdded = true
+        
+        let castle = Castle()
+        parentNode.addChildNode(castle)
+    }
+    
     private func subscribeToActionStream() {
         ARManager2.shared2
             .actionStream2
@@ -160,6 +162,37 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             }
             .store(in: &cancellable)
     }
+    
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) {
+            
+            contact.nodeA.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
+            contact.nodeA.removeFromParentNode()
+            (contact.nodeB as? Castle)?.takeDamage(spawningZombiePage: 2)
+            
+        } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
+
+            contact.nodeB.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
+            contact.nodeB.removeFromParentNode()
+            (contact.nodeA as? Castle)?.takeDamage(spawningZombiePage: 2)
+            
+        }
+        
+        if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
+            
+            contact.nodeA.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
+            contact.nodeA.removeFromParentNode()
+            (contact.nodeB as? Zombie)?.takeDamage()
+            
+        } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) {
+            
+            contact.nodeB.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
+            contact.nodeB.removeFromParentNode()
+            (contact.nodeA as? Zombie)?.takeDamage()
+            
+        }
+        
+    }
 
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
         for anchor in anchors {
@@ -171,17 +204,19 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             if let participantAnchor = anchor as? ARParticipantAnchor {
                 print("successfully connected with another user!")
 
-                let sphere = SCNSphere(radius: 0.03)
-                let material = SCNMaterial()
-                material.diffuse.contents = UIColor.red
-                sphere.materials = [material]
-
-                let sphereNode = SCNNode(geometry: sphere)
-                sphereNode.transform = SCNMatrix4(participantAnchor.transform)
-
-                sceneView2.scene.rootNode.addChildNode(sphereNode)
+//                let sphere = SCNSphere(radius: 0.03)
+//                let material = SCNMaterial()
+//                material.diffuse.contents = UIColor.red
+//                sphere.materials = [material]
+//
+//                let sphereNode = SCNNode(geometry: sphere)
+//                sphereNode.transform = SCNMatrix4(participantAnchor.transform)
+//
+//                sceneView2.scene.rootNode.addChildNode(sphereNode)
                 
-//                startSpawningZombies(for: sceneView2.scene.rootNode)
+                //add castle and zombie
+                addCastle(for: sceneView2.scene.rootNode)
+                startSpawningZombies(for: sceneView2.scene.rootNode)
             }
         }
     }
