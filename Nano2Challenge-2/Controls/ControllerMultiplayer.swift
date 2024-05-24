@@ -292,7 +292,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
 
                 dispatchGroup.notify(queue: .main) {
                     // Add castle and start spawning zombies only after the message is updated
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 11) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 11.0) {
                         self.addCastle(for: self.sceneView2.scene.rootNode)
                         self.startSpawningZombies(for: self.sceneView2.scene.rootNode)
                     }

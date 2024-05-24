@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MultiplayerView: View {
-    //    @State private var spawningZombiePage: Int = 2
+//    @StateObject private var singleplayer: ViewController
     @StateObject private var multiplayer = ControllerMultiplayer()
     @State var message: String = ""
     let deviceType = UIDevice.current.userInterfaceIdiom
@@ -17,6 +17,7 @@ struct MultiplayerView: View {
     @State private var remainingTime: Int = 10
     @State private var randomProTip: String
     @State private var showConnectedStatus: Bool = true
+    @State private var remainingTimeMs: Double = 120.0
     
 //    var gifNames = ["gif1", "gif2", "gif3", "gif4"]
     var proTips = [
@@ -27,13 +28,34 @@ struct MultiplayerView: View {
         "If you lose, the restart button is your best friend."
     ]
     
+    var formattedTime: String {
+        String(format: "%.2f", remainingTimeMs)
+    }
+    
+    var timerColor: Color {
+        switch remainingTimeMs {
+        case 90...:
+            return .green
+        case 60..<90:
+            return .yellow
+        case 30..<60:
+            return .orange
+        case 0..<30:
+            return .red
+        default:
+            return .black
+        }
+    }
+    
     init() {
         _randomProTip = State(initialValue: proTips.randomElement() ?? "If you keep losing, it might be time to take a break.")
+        
+//        _singleplayer = StateObject(wrappedValue: ViewController(spawningZombiePage: .constant(1)))
     }
     
     var body: some View {
         ZStack {
-            //            ARViewContainer(spawningZombiePage: $spawningZombiePage)
+//                        ARViewContainer(singleplayer: singleplayer)
             ARViewContainerMultiplayer(multiplayer: multiplayer)
                 .ignoresSafeArea()
                 .overlay(alignment: .bottom) {
@@ -97,6 +119,15 @@ struct MultiplayerView: View {
                                 .foregroundColor(Color.white)
                                 .scaledToFit()
                                 .frame(width: 20, height: 20)
+                            
+                            Text("\(formattedTime) s")
+                                .font(deviceType == .pad ? .system(size: 45) : .largeTitle)
+                                .bold()
+                                .foregroundColor(timerColor)
+                                .onAppear{
+                                    startCountdownMs()
+                                }
+                                .position(CGPoint(x: UIScreen.main.bounds.width/2, y: deviceType == .pad ? UIScreen.main.bounds.height/20 : UIScreen.main.bounds.height/13))
                         }
                     } else {
                         VStack {
@@ -164,6 +195,17 @@ struct MultiplayerView: View {
             } else {
                 doneShowBackground = true
                 showConnectedStatus = true
+                timer.invalidate()
+            }
+        }
+    }
+    
+    private func startCountdownMs() {
+        Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
+            if remainingTimeMs > 0.00 {
+                remainingTimeMs -= 0.01
+            } else {
+//                showBackground = false
                 timer.invalidate()
             }
         }
