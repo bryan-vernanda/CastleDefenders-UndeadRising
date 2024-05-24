@@ -173,8 +173,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             .actionStreamContinue
             .sink { [weak self] action in //to make sure no app crashing or memory leaks, use weak self
                 self?.zombieNumSpawn += 20
-                self?.timeSpawn -= 1.0
-                self?.timeWalking -= 1.5
+                self?.timeSpawn -= 0.5
+                self?.timeWalking -= 2.0
                 self?.completeKillingZombies = false
                 switch action {
                     case .continueButton:

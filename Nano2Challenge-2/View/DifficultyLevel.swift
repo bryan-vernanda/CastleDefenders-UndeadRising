@@ -19,7 +19,7 @@ struct DifficultyLevelView: View {
                     Rectangle()
                         .frame(width: geometry.size.width, height: geometry.size.height)
                         .foregroundColor(.gray)
-                        .opacity(0.3)
+                        .opacity(0.5)
                     Rectangle()
                         .frame(width: progressWidth(for: difficulty, in: geometry.size.width), height: geometry.size.height)
                         .foregroundColor(color(for: difficulty))
