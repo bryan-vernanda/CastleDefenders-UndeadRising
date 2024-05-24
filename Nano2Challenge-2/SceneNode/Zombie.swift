@@ -13,8 +13,10 @@ class Zombie: SCNNode {
     var health: Int = 3
     var healthBarNode: SCNNode = SCNNode()
     var physicsNode: SCNNode = SCNNode()
+    var timeTakenWalking: CGFloat
     
-    init(at position: SCNVector3) {
+    init(at position: SCNVector3, timeWalking: CGFloat) {
+        timeTakenWalking = timeWalking
         super.init()
         
         let zombieScene = SCNScene(named: "art.scnassets/Zombie.scn")!
@@ -53,7 +55,7 @@ class Zombie: SCNNode {
             borderNode.addChildNode(healthBarNode)
             physicsNode.addChildNode(borderNode)
             
-            let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: 0, z: 0.5), duration: 10.0)
+            let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: 0, z: 0.5), duration: timeWalking)
             self.runAction(moveAction)
         }
     }
@@ -135,7 +137,7 @@ class Zombie: SCNNode {
         
         let knockback1 = SCNAction.move(to: knockbackPosition1, duration: 0.05)
         let knockback2 = SCNAction.move(to: knockbackPosition2, duration: 0.05)
-        let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: 0, z: 0.5), duration: 10.0)
+        let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: 0, z: 0.5), duration: timeTakenWalking)
         
         let sequence = SCNAction.sequence([colorChange, knockback1, revertColor, knockback2, moveAction])
         self.removeAllActions()

@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct ARViewContainer: UIViewControllerRepresentable {
-    @Binding var spawningZombiePage: Int
+//    @Binding var spawningZombiePage: Int
+    @ObservedObject var singleplayer: ViewController
     
     func makeUIViewController(context: Context) -> ViewController {
-        return ViewController(spawningZombiePage: $spawningZombiePage)
+//        singleplayer.spawningZombiePage = spawningZombiePage
+        return singleplayer
     }
     
     func updateUIViewController(_ uiViewController: ViewController, context: Context) {

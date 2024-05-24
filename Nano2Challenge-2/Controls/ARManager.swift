@@ -13,6 +13,10 @@ enum ARAction {
     case attackButton
 }
 
+enum ARActionContinue {
+    case continueButton
+}
+
 enum ARAction2 {
     case attackButton
 }
@@ -31,7 +35,7 @@ class ARManager {
     
     let sceneView: ARSCNView
     var actionStream = PassthroughSubject<ARAction, Never>()
-//    var actionStreamZombie = PassthroughSubject<ARActionZombie, Never>()
+    var actionStreamContinue = PassthroughSubject<ARActionContinue, Never>()
 }
 
 class ARManager2 {

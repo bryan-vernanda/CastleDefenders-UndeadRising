@@ -23,11 +23,18 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     @IBOutlet var sceneView: ARSCNView!
     
     private var cancellable: Set<AnyCancellable> = []
+    private var cancellable1: Set<AnyCancellable> = []
+    private var cancellable2: Set<AnyCancellable> = []
     private var spawnTimer: DispatchSourceTimer?
     private var currentZPosition: Float = -5
     private let randomSource = GKRandomSource()
     private var limitZombies = 0
+    private var zombieNumSpawn: Int = 10
+    private var timeSpawn: CGFloat = 2.0
+    private var timeWalking: CGFloat = 10.0
     @Binding var spawningZombiePage: Int
+    
+    @Published var completeKillingZombies: Bool = false
     
     init(spawningZombiePage: Binding<Int>) {
         self._spawningZombiePage = spawningZombiePage
@@ -56,6 +63,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 //        sceneView.debugOptions = .showWorldOrigin
         
         sceneView.scene.physicsWorld.contactDelegate = self
+        
+        setupSendingCompleteKillingZombies()
     }
     
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
@@ -132,19 +141,22 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             
             // Start spawning zombies at regular intervals in different pages
             if spawningZombiePage == 1 {
-                startSpawningZombies(for: node, spawningCount: spawningZombiePage)
-            } else if spawningZombiePage == 2 {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 6.01) {
-                    self.startSpawningZombies(for: node, spawningCount: self.spawningZombiePage)
+                startSpawningZombies(for: node, spawningCount: spawningZombiePage, zombieLimitNumber: zombieNumSpawn, timeSpawn: timeSpawn, timeWalking: timeWalking)
+            } else if (spawningZombiePage == 2) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 11.0) {
+                    self.startSpawningZombies(for: node, spawningCount: self.spawningZombiePage, zombieLimitNumber: self.zombieNumSpawn, timeSpawn: self.timeSpawn, timeWalking: self.timeWalking)
                 }
             }
             
+            //spawning zombie button
+            subscribeToActionStreamContinue(for: node, spawningCount: self.spawningZombiePage)
+            
             // Attack button
-            subscribeToActionStream(for: node)
+            subscribeToActionStreamAtt(for: node)
         }
     }
     
-    private func subscribeToActionStream(for node: SCNNode) {
+    private func subscribeToActionStreamAtt(for node: SCNNode) {
         ARManager.shared
             .actionStream
             .sink { [weak self] action in //to make sure no app crashing or memory leaks, use weak self
@@ -156,10 +168,39 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             .store(in: &cancellable)
     }
     
-    private func startSpawningZombies(for parentNode: SCNNode, spawningCount: Int) {
+    private func subscribeToActionStreamContinue(for node: SCNNode, spawningCount: Int) {
+        ARManager.shared
+            .actionStreamContinue
+            .sink { [weak self] action in //to make sure no app crashing or memory leaks, use weak self
+                self?.zombieNumSpawn += 20
+                self?.timeSpawn -= 1.0
+                self?.timeWalking -= 1.5
+                self?.completeKillingZombies = false
+                switch action {
+                    case .continueButton:
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 11.0) {
+                        self?.startSpawningZombies(for: node, spawningCount: spawningCount, zombieLimitNumber: self?.zombieNumSpawn ?? 20, timeSpawn: self?.timeSpawn ?? 20.0, timeWalking: self?.timeWalking ?? 20.0)
+                    }
+                }
+            }//this is a subscribe, so customARView get inform whenever contentview sends an ARAction
+            .store(in: &cancellable1)
+    }
+    
+    private func setupSendingCompleteKillingZombies() {
+        $completeKillingZombies
+            .receive(on: DispatchQueue.main) // Ensure updates are received on the main thread
+            .sink { [weak self] newValue in
+                guard let self = self else { return }
+                self.completeKillingZombies = newValue
+            }
+            .store(in: &cancellable2)
+    }
+    
+    private func startSpawningZombies(for parentNode: SCNNode, spawningCount: Int, zombieLimitNumber: Int, timeSpawn: CGFloat, timeWalking: CGFloat) {
         // Create a dispatch timer to spawn zombies every 2 seconds
+        spawnTimer?.cancel()  // Cancel any existing timer
         spawnTimer = DispatchSource.makeTimerSource()
-        spawnTimer?.schedule(deadline: .now(), repeating: 2.0)
+        spawnTimer?.schedule(deadline: .now(), repeating: timeSpawn)
         spawnTimer?.setEventHandler { [weak self] in
             guard let self = self else { return }
             
@@ -169,20 +210,26 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
 //                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
                 
                 // Spawn a zombie at the current position & limit the zombies
-                if self.limitZombies < 10 {
+                if self.limitZombies < zombieLimitNumber {
 //                    print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
-                    self.spawnZombie(at: SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition), for: parentNode)
+//                    print("\(zombieLimitNumber), \(timeSpawn), \(timeWalking), \(spawningCount)")
+                    self.spawnZombie(at: SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition), for: parentNode, timeWalking: timeWalking)
                     if spawningCount == 2 {
                         self.limitZombies += 1
+//                        print("\(self.limitZombies)")
                     }
+                } else {
+                    self.limitZombies = 0
+                    self.completeKillingZombies = true
+                    self.spawnTimer?.cancel()
                 }
             }
         }
         spawnTimer?.resume()
     }
     
-    private func spawnZombie(at position: SCNVector3, for parentNode: SCNNode) {
-        let zombie = Zombie(at: position)
+    private func spawnZombie(at position: SCNVector3, for parentNode: SCNNode, timeWalking: CGFloat) {
+        let zombie = Zombie(at: position, timeWalking: timeWalking)
         parentNode.addChildNode(zombie)
     }
     
@@ -207,6 +254,10 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         
         // Add the arrow to the scene
         parentNode.addChildNode(arrow)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { // to remove scene every time deploy the arrow so reduce memory
+            arrow.removeFromParentNode()
+        }
     }
     
     func session(_ session: ARSession, didFailWithError error: Error) {

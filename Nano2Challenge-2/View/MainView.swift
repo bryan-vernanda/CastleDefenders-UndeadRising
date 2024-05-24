@@ -8,15 +8,21 @@
 import SwiftUI
 
 struct MainView: View {
-    @State private var spawningZombiePage: Int = 1
+//    @State private var spawningZombiePage: Int = 1
+//    @State private var checkFirstIndicator: Bool = true
     @State private var navigateToGameplayView: Bool = false
     @State private var navigateToMultiplayerView: Bool = false
+    @StateObject private var singleplayer: ViewController
+    
+    init() {
+        _singleplayer = StateObject(wrappedValue: ViewController(spawningZombiePage: .constant(1)))
+    }
     
     var body: some View {
         NavigationStack {
             ZStack {
                 if !navigateToGameplayView {
-                    ARViewContainer(spawningZombiePage: $spawningZombiePage)
+                    ARViewContainer(singleplayer: singleplayer)
                 }
                 
                 VStack(alignment: .center) {
@@ -44,12 +50,10 @@ struct MainView: View {
                 TiltPhone()
             }
             .navigationDestination(isPresented: $navigateToMultiplayerView) {
-                MultiplayerMainView()
+                MultiplayerView()
             }
             .ignoresSafeArea()
         }
- 
-//        .ignoresSafeArea()
     }
 }
 

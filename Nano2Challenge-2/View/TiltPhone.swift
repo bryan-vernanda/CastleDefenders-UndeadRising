@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import Combine
 
 struct TiltPhone: View {
     @ObservedObject private var accelManager = AccelometerManager.shared
     @State private var navigateToGameplayView: Bool = false
-    private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+//    private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    @State private var timerCancellable: AnyCancellable?
     let deviceType = UIDevice.current.userInterfaceIdiom
     
     var body: some View {
@@ -23,17 +25,32 @@ struct TiltPhone: View {
                 Text("Hold your device upright with the screen facing you.")
                     .font(deviceType == .pad ? .title : .body)
             }
+            .onAppear {
+                startTimer()
+            }
+            .onDisappear {
+                stopTimer()
+            }
             .navigationBarBackButtonHidden(true)
-            .onReceive(timer) { _ in
-                if (accelManager.x <= -0.878) &&
-                   (accelManager.x >= -0.9879) {
+            .navigationDestination(isPresented: $navigateToGameplayView) {
+                SingleplayerView()
+            }
+        }
+    }
+    
+    private func startTimer() {
+        timerCancellable = Timer.publish(every: 0.1, on: .main, in: .common)
+            .autoconnect()
+            .sink { _ in
+                if (accelManager.x <= -0.878) && (accelManager.x >= -0.9879) {
                     navigateToGameplayView = true
                 }
             }
-            .navigationDestination(isPresented: $navigateToGameplayView) {
-                GameplayView()
-            }
-        }
+    }
+
+    private func stopTimer() {
+        timerCancellable?.cancel()
+        timerCancellable = nil
     }
 }
 

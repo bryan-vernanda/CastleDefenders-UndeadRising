@@ -187,7 +187,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     }
     
     private func spawnZombie(at position: SCNVector3, for parentNode: SCNNode) {
-        let zombie = Zombie(at: position)
+        let zombie = Zombie(at: position, timeWalking: 10.0)
         parentNode.addChildNode(zombie)
     }
     
@@ -292,7 +292,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
 
                 dispatchGroup.notify(queue: .main) {
                     // Add castle and start spawning zombies only after the message is updated
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 11.1) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 11) {
                         self.addCastle(for: self.sceneView2.scene.rootNode)
                         self.startSpawningZombies(for: self.sceneView2.scene.rootNode)
                     }
