@@ -22,10 +22,6 @@
 		93E060B22BF4A99600B986CB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93E060B12BF4A99600B986CB /* Assets.xcassets */; };
 		93E5F8A32BF9FCB0000A2662 /* AccelometerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F8A22BF9FCB0000A2662 /* AccelometerManager.swift */; };
 		93E5F8A52BFA0729000A2662 /* TiltPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F8A42BFA0729000A2662 /* TiltPhone.swift */; };
-		93E5F8B32BFA3D71000A2662 /* gif1.gif in Resources */ = {isa = PBXBuildFile; fileRef = 93E5F8B22BFA3D71000A2662 /* gif1.gif */; };
-		93E5F8C02BFA50CF000A2662 /* gif2.gif in Resources */ = {isa = PBXBuildFile; fileRef = 93E5F8BF2BFA50CF000A2662 /* gif2.gif */; };
-		93E5F8C22BFA50D7000A2662 /* gif3.gif in Resources */ = {isa = PBXBuildFile; fileRef = 93E5F8C12BFA50D7000A2662 /* gif3.gif */; };
-		93E5F8C62BFA50E7000A2662 /* gif4.gif in Resources */ = {isa = PBXBuildFile; fileRef = 93E5F8C52BFA50E7000A2662 /* gif4.gif */; };
 		93E5F9742BFCDF8D000A2662 /* ControllerMultiplayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9732BFCDF8D000A2662 /* ControllerMultiplayer.swift */; };
 		93E5F9762BFCE027000A2662 /* ArrowMultiplayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9752BFCE027000A2662 /* ArrowMultiplayer.swift */; };
 		93E5F9782BFCE120000A2662 /* MultiplayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9772BFCE120000A2662 /* MultiplayerView.swift */; };
@@ -50,10 +46,6 @@
 		93E060B12BF4A99600B986CB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		93E5F8A22BF9FCB0000A2662 /* AccelometerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelometerManager.swift; sourceTree = "<group>"; };
 		93E5F8A42BFA0729000A2662 /* TiltPhone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiltPhone.swift; sourceTree = "<group>"; };
-		93E5F8B22BFA3D71000A2662 /* gif1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif1.gif; sourceTree = "<group>"; };
-		93E5F8BF2BFA50CF000A2662 /* gif2.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif2.gif; sourceTree = "<group>"; };
-		93E5F8C12BFA50D7000A2662 /* gif3.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif3.gif; sourceTree = "<group>"; };
-		93E5F8C52BFA50E7000A2662 /* gif4.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif4.gif; sourceTree = "<group>"; };
 		93E5F9732BFCDF8D000A2662 /* ControllerMultiplayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerMultiplayer.swift; sourceTree = "<group>"; };
 		93E5F9752BFCE027000A2662 /* ArrowMultiplayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowMultiplayer.swift; sourceTree = "<group>"; };
 		93E5F9772BFCE120000A2662 /* MultiplayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerView.swift; sourceTree = "<group>"; };
@@ -118,7 +110,6 @@
 				93E5F9792BFCE935000A2662 /* Info.plist */,
 				93E060A82BF4A99400B986CB /* AppDelegate.swift */,
 				93E060AA2BF4A99400B986CB /* art.scnassets */,
-				93E5F8B42BFA3D87000A2662 /* Animated GIF */,
 				93F7DAC42BF86C9C0045A924 /* Controls */,
 				938F1D1D2BF7884D00974243 /* View */,
 				938F1D132BF6518500974243 /* SceneNode */,
@@ -127,17 +118,6 @@
 				93E060B12BF4A99600B986CB /* Assets.xcassets */,
 			);
 			path = "Nano2Challenge-2";
-			sourceTree = "<group>";
-		};
-		93E5F8B42BFA3D87000A2662 /* Animated GIF */ = {
-			isa = PBXGroup;
-			children = (
-				93E5F8C52BFA50E7000A2662 /* gif4.gif */,
-				93E5F8C12BFA50D7000A2662 /* gif3.gif */,
-				93E5F8BF2BFA50CF000A2662 /* gif2.gif */,
-				93E5F8B22BFA3D71000A2662 /* gif1.gif */,
-			);
-			path = "Animated GIF";
 			sourceTree = "<group>";
 		};
 		93F7DAC42BF86C9C0045A924 /* Controls */ = {
@@ -216,13 +196,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				93E060AB2BF4A99400B986CB /* art.scnassets in Resources */,
-				93E5F8C22BFA50D7000A2662 /* gif3.gif in Resources */,
 				93733D702BFDA61100A8791C /* Launch Screen.storyboard in Resources */,
 				93E060B22BF4A99600B986CB /* Assets.xcassets in Resources */,
-				93E5F8C02BFA50CF000A2662 /* gif2.gif in Resources */,
-				93E5F8B32BFA3D71000A2662 /* gif1.gif in Resources */,
 				93E060B02BF4A99400B986CB /* Base in Resources */,
-				93E5F8C62BFA50E7000A2662 /* gif4.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
