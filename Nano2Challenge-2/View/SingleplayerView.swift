@@ -185,7 +185,6 @@ struct SingleplayerView: View {
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             if remainingTime > 0 {
                 remainingTime -= 1
-
             } else {
                 showCompleteKilling = true
                 timer.invalidate()

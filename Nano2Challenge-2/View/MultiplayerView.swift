@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MultiplayerView: View {
 //    @StateObject private var singleplayer: ViewController
-    @StateObject private var multiplayer = ControllerMultiplayer()
+    @StateObject private var multiplayer: ControllerMultiplayer
     @State var message: String = ""
     let deviceType = UIDevice.current.userInterfaceIdiom
     
@@ -17,7 +17,8 @@ struct MultiplayerView: View {
     @State private var remainingTime: Int = 10
     @State private var randomProTip: String
     @State private var showConnectedStatus: Bool = true
-    @State private var remainingTimeMs: Double = 120.0
+    @State private var remainingTimeMs: Double = 120.00
+    @State private var timerHasStoppedIndicator: Bool = false
     
 //    var gifNames = ["gif1", "gif2", "gif3", "gif4"]
     var proTips = [
@@ -49,6 +50,8 @@ struct MultiplayerView: View {
     
     init() {
         _randomProTip = State(initialValue: proTips.randomElement() ?? "If you keep losing, it might be time to take a break.")
+        
+        _multiplayer = StateObject(wrappedValue: ControllerMultiplayer())
         
 //        _singleplayer = StateObject(wrappedValue: ViewController(spawningZombiePage: .constant(1)))
     }
@@ -183,6 +186,9 @@ struct MultiplayerView: View {
                 .onReceive(multiplayer.$message.receive(on: DispatchQueue.main)) { value in
                     message = value
                 }
+                .onChange(of: timerHasStoppedIndicator, { _, newValue in
+                    multiplayer.indicatorStopSpawnZombie = newValue
+                })
         }
         .navigationBarBackButtonHidden(true)
         .ignoresSafeArea()
@@ -202,10 +208,10 @@ struct MultiplayerView: View {
     
     private func startCountdownMs() {
         Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { timer in
-            if remainingTimeMs > 0.00 {
+            if remainingTimeMs > 0 {
                 remainingTimeMs -= 0.01
             } else {
-//                showBackground = false
+                timerHasStoppedIndicator = true
                 timer.invalidate()
             }
         }

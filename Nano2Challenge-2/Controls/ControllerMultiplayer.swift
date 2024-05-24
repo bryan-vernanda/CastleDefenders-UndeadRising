@@ -37,7 +37,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     private var isSpawningZombies = false // Track if zombie spawning has started
     private var castleTransform: simd_float4x4?
     private var previousCastleTransform: simd_float4x4?
-    private var indicator: Bool = true
+    @Published var indicatorStopSpawnZombie: Bool = false
     
     @Published var message: String = ""
     
@@ -174,11 +174,17 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                     let zombiePosition = SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition)
     //                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
                     
-                    // Broadcast the position to other peers
-                    self.broadcastZombiePosition(zombiePosition)
-                    
-                    // Spawn a zombie at the current position
-                    self.spawnZombie(at: zombiePosition, for: parentNode)
+                    if !(self.indicatorStopSpawnZombie) {
+                        // Broadcast the position to other peers
+                        self.broadcastZombiePosition(zombiePosition)
+                        
+                        // Spawn a zombie at the current position
+                        self.spawnZombie(at: zombiePosition, for: parentNode)
+                    } else if self.indicatorStopSpawnZombie {
+                        //add action win
+                        self.spawnTimer?.cancel()
+                    }
+
                 }
             }
             spawnTimer?.resume()
@@ -432,25 +438,5 @@ extension ControllerMultiplayer {
         } else {
             print("Deferred sending collaboration to later because there are no peers.")
         }
-    }
-}
-
-extension UUID {
-    /**
-     - Tag: ToRandomColor
-    Pseudo-randomly return one of several fixed standard colors, based on this UUID's first four bytes.
-    */
-    func toRandomColor() -> UIColor {
-        var firstFourUUIDBytesAsUInt32: UInt32 = 0
-        let data = withUnsafePointer(to: self) {
-            return Data(bytes: $0, count: MemoryLayout.size(ofValue: self))
-        }
-        _ = withUnsafeMutableBytes(of: &firstFourUUIDBytesAsUInt32, { data.copyBytes(to: $0) })
-
-        let colors: [UIColor] = [.red, .green, .blue, .yellow, .magenta, .cyan, .purple,
-        .orange, .brown, .lightGray, .gray, .darkGray, .black, .white]
-        
-        let randomNumber = Int(firstFourUUIDBytesAsUInt32) % colors.count
-        return colors[randomNumber]
     }
 }
