@@ -95,8 +95,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         $message
             .receive(on: DispatchQueue.main) // Ensure updates are received on the main thread
             .sink { [weak self] newValue in
-                guard let self = self else { return }
-                self.message = newValue
+                guard self != nil else { return }
             }
             .store(in: &cancellable1)
     }

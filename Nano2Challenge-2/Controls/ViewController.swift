@@ -190,8 +190,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         $completeKillingZombies
             .receive(on: DispatchQueue.main) // Ensure updates are received on the main thread
             .sink { [weak self] newValue in
-                guard let self = self else { return }
-                self.completeKillingZombies = newValue
+                guard self != nil else { return }
             }
             .store(in: &cancellable2)
     }

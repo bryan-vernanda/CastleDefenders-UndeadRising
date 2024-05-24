@@ -100,7 +100,6 @@ struct SingleplayerView: View {
                         showCompleteKilling = false
                         bounce = false
                         difficultyLevel += 1
-                        completeKilling = false
                     } label: {
                         Image("NextLevelButton")
                             .resizable()
@@ -186,7 +185,7 @@ struct SingleplayerView: View {
         Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             if remainingTime > 0 {
                 remainingTime -= 1
-                print("\(remainingTime)")
+
             } else {
                 showCompleteKilling = true
                 timer.invalidate()
