@@ -23,6 +23,8 @@ import MultipeerConnectivity
 class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDelegate, SCNPhysicsContactDelegate, ObservableObject {
     
     @IBOutlet var sceneView2: ARSCNView!
+    private var timerStatusPlayer: Timer?
+    private var player: Player? = nil
     
     var multipeerSession: MultipeerSession?
     var sessionIDObservation: NSKeyValueObservation?
@@ -80,6 +82,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         // Invalidate the timer when the view disappears
         spawnTimer?.cancel()
         spawnTimer = nil
+        timerStatusPlayer?.invalidate()
         
         // Pause the view's session
         sceneView2.session.pause()
@@ -100,9 +103,23 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             .store(in: &cancellable1)
     }
     
-    func addLaserRedAnchor() {
+    func addArrowAnchor() {
         guard let currentFrame = sceneView2.session.currentFrame else { return }
-        let anchor = ARAnchor(name: "laserRed", transform: currentFrame.camera.transform)
+        let anchor = ARAnchor(name: "arrowAnchor", transform: currentFrame.camera.transform)
+        sceneView2.session.add(anchor: anchor)
+    }
+    
+    private func startTimer() {
+        timerStatusPlayer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updatePlayerAnchor), userInfo: nil, repeats: true)
+    }
+
+    @objc private func updatePlayerAnchor() {
+        addPlayerAnchor()
+    }
+    
+    func addPlayerAnchor() {
+        guard let currentFrame = sceneView2.session.currentFrame else { return }
+        let anchor = ARAnchor(name: "playerAnchor", transform: currentFrame.camera.transform)
         sceneView2.session.add(anchor: anchor)
     }
     
@@ -140,7 +157,6 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         let orientation = SCNVector3(-anchor.transform.columns.2.x,
                                      -anchor.transform.columns.2.y,
                                      -anchor.transform.columns.2.z)
-        
         // Initiate Arrow
         let arrow = Arrow(at: position, at: orientation)
         arrow.look(at: SCNVector3(position.x + orientation.x, position.y + orientation.y, position.z + orientation.z))
@@ -153,6 +169,46 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             arrow.removeFromParentNode()
         }
     }
+    
+    private func playerDisplay(for parentNode: SCNNode, pass anchor: ARAnchor) {
+//        let timerBow = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(updateBowPosition), userInfo: nil, repeats: true)
+        
+//        guard let anchorBow = bowAnchorMany else { return }
+//        sceneView2.session.remove(anchor: anchorBow)
+//        bowAnchorMany = anchor
+        
+        let position = SCNVector3(anchor.transform.columns.3.x,
+                                  anchor.transform.columns.3.y + 0.1,
+                                  anchor.transform.columns.3.z)
+        
+//        let orientation = SCNVector3(-anchor.transform.columns.2.x,
+//                                     -anchor.transform.columns.2.y,
+//                                     -anchor.transform.columns.2.z)
+//        
+//        let exactPos = SCNVector3(position.x + orientation.x,
+//                                  position.y + orientation.y + 0.5,
+//                                  position.z + orientation.z)
+        
+        if player == nil {
+            player = Player(at: position, pass: anchor)
+//            bow!.geometry?.firstMaterial?.diffuse.contents = anchor.sessionIdentifier?.toRandomColor() ?? .white
+            parentNode.addChildNode(player!)
+        } else {
+            player?.position = position
+        }
+        
+    }
+    
+//    @objc private func updateBowPosition() {
+//        guard let anchor = currentAnchor, let bow = bow else { return }
+//        
+//        let newPosition = SCNVector3(anchor.transform.columns.3.x,
+//                                     anchor.transform.columns.3.y,
+//                                     anchor.transform.columns.3.z)
+//        
+//        bow.position = newPosition
+////        print("Updated bow position: \(newPosition)")
+//    }
     
     private func startSpawningZombies(for parentNode: SCNNode) {
         if !isSpawningZombies {
@@ -221,7 +277,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                 guard let self = self else { return }
                 switch action {
                     case .attackButton:
-                        self.addLaserRedAnchor()
+                        self.addArrowAnchor()
                 }
             }
             .store(in: &cancellable)
@@ -260,11 +316,16 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
 
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
         for anchor in anchors {
-            if let anchorName = anchor.name, anchorName == "laserRed" {
+            if let anchorName = anchor.name, anchorName == "arrowAnchor" {
                 // Call attackBowButton for the parent node
                 attackBowButton(for: sceneView2.scene.rootNode, pass: anchor)
             }
-
+            
+            if let anchorName = anchor.name, anchorName == "playerAnchor" {
+                // Call attackBowButton for the parent node
+                playerDisplay(for: self.sceneView2.scene.rootNode, pass: anchor)
+            }
+            
             if let participantAnchor = anchor as? ARParticipantAnchor {
                 DispatchQueue.main.async {
                     self.castleTransform = participantAnchor.transform
@@ -281,7 +342,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             
             if anchor.name == "castleZombieAnchor" {
                 let dispatchGroup = DispatchGroup()
-
+                
                 dispatchGroup.enter()
                 DispatchQueue.main.async {
                     print("successfully connected with another user!")
@@ -289,10 +350,11 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                     self.sceneView2.debugOptions = []
                     dispatchGroup.leave()
                 }
-
+                
                 dispatchGroup.notify(queue: .main) {
                     // Add castle and start spawning zombies only after the message is updated
                     DispatchQueue.main.asyncAfter(deadline: .now() + 11.0) {
+                        self.startTimer()
                         self.addCastle(for: self.sceneView2.scene.rootNode)
                         self.startSpawningZombies(for: self.sceneView2.scene.rootNode)
                     }

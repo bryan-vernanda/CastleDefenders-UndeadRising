@@ -56,6 +56,11 @@ class Castle: SCNNode{
         fatalError("init(coder:) has not been implemented")
     }
     
+    func healBackCastle() {
+        health = 5
+        updateHealthBar()
+    }
+    
     func takeDamage(spawningZombiePage: Int) {
         
         if spawningZombiePage == 2 {
@@ -63,7 +68,9 @@ class Castle: SCNNode{
             updateHealthBar()
             
             if health <= 0 {
-                //show overlay of page "YOU LOSE"
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(name: .castleDestroyed, object: nil)
+                }
             }
         }
         
@@ -74,7 +81,9 @@ class Castle: SCNNode{
         healthBarNode.geometry = SCNBox(width: newWidth, height: 0.05, length: 0.02, chamferRadius: 0)
         healthBarNode.geometry?.firstMaterial?.diffuse.contents = UIColor.red.withAlphaComponent(0.8)
         
-        if health == 4 {
+        if health == 5{
+            healthBarNode.position = SCNVector3(x: 0, y: 0, z: 0)
+        } else if health == 4 {
             healthBarNode.position = SCNVector3(x: 0.18, y: 0, z: 0)
         } else if health == 3 {
             healthBarNode.position = SCNVector3(x: 0.36, y: 0, z: 0)
@@ -86,4 +95,8 @@ class Castle: SCNNode{
             healthBarNode.position = SCNVector3(x: 0.9, y: 0, z: 0)
         }
     }
+}
+
+extension Notification.Name {
+    static let castleDestroyed = Notification.Name("castleDestroyed")
 }

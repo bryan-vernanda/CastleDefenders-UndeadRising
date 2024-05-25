@@ -33,6 +33,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     private var timeSpawn: CGFloat = 2.0
     private var timeWalking: CGFloat = 10.0
     @Binding var spawningZombiePage: Int
+    let castle = Castle()
     
     @Published var completeKillingZombies: Bool = false
     
@@ -176,6 +177,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
                 self?.timeSpawn -= 0.5
                 self?.timeWalking -= 2.0
                 self?.completeKillingZombies = false
+                self?.castle.healBackCastle()
                 switch action {
                     case .continueButton:
                     DispatchQueue.main.asyncAfter(deadline: .now() + 11.0) {
@@ -233,7 +235,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     
     private func addCastle(for parentNode: SCNNode) {
-        let castle = Castle()
         parentNode.addChildNode(castle)
     }
     

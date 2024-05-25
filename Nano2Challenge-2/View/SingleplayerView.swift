@@ -14,13 +14,14 @@ struct SingleplayerView: View {
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var remainingTime: Int = 10
     @State private var difficultyLevel: Int = 1
-    @State private var timeRemainingShowLevelUp = 5
+    @State private var timeRemainingShowLevelUp = 6
     @State private var showCompleteKilling: Bool = false
     @State private var bounce: Bool = false
     @StateObject private var singleplayer: ViewController
     @State private var randomProTip: String
     @State private var completeKilling: Bool = false
     @State private var showLevelUp: Bool = false
+    @State private var youDiedIndicator: Bool = false
     
     var proTips = [
         "If you keep losing, it might be time to take a break.",
@@ -70,7 +71,7 @@ struct SingleplayerView: View {
                 }
                 .navigationBarBackButtonHidden(true)
             
-            if showCompleteKilling {
+            if (showCompleteKilling) && !(youDiedIndicator) {
                 Image("LevelUpButton")
                     .resizable()
                     .scaledToFit()
@@ -96,7 +97,7 @@ struct SingleplayerView: View {
                         showLevelUp = false
                         showBackground = true
                         remainingTime = 10
-                        timeRemainingShowLevelUp = 5
+                        timeRemainingShowLevelUp = 6
                         showCompleteKilling = false
                         bounce = false
                         difficultyLevel += 1
@@ -108,10 +109,10 @@ struct SingleplayerView: View {
                     }
                     .position(CGPoint(x: deviceType == .pad ? UIScreen.main.bounds.width/1.09 : UIScreen.main.bounds.width/1.1, y: deviceType == .pad ? UIScreen.main.bounds.height/13 : UIScreen.main.bounds.height/8.5))
                 }
-            } else if completeKilling {
+            } else if completeKilling && !(youDiedIndicator) {
                 ZStack{ }
                 .onAppear {
-                    startCountdownCompleteKilling(remainingTime: 7)
+                    startCountdownCompleteKilling(remainingTime: 9)
                 }
             }
             
@@ -152,7 +153,7 @@ struct SingleplayerView: View {
                                 .font(deviceType == .pad ? .largeTitle : .title)
                                 .bold()
                                 .foregroundColor(.black)
-                                .padding(.bottom, 50)
+                                .padding(.bottom, deviceType == .pad ? 50 : 25)
                         }
                         .padding(.bottom, 20)
                     }
@@ -161,10 +162,17 @@ struct SingleplayerView: View {
                     startCountdown()
                 }
             }
+            
+            if youDiedIndicator {
+                EndGameView()
+            }
 
         }
         .onReceive(singleplayer.$completeKillingZombies.receive(on: DispatchQueue.main)) { value in
             completeKilling = value
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .castleDestroyed)) { _ in
+            youDiedIndicator = true
         }
         .ignoresSafeArea()
     }
