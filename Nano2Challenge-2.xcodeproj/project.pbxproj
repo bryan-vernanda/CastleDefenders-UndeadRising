@@ -23,7 +23,6 @@
 		93E5F8A32BF9FCB0000A2662 /* AccelometerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F8A22BF9FCB0000A2662 /* AccelometerManager.swift */; };
 		93E5F8A52BFA0729000A2662 /* TiltPhone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F8A42BFA0729000A2662 /* TiltPhone.swift */; };
 		93E5F9742BFCDF8D000A2662 /* ControllerMultiplayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9732BFCDF8D000A2662 /* ControllerMultiplayer.swift */; };
-		93E5F9762BFCE027000A2662 /* ArrowMultiplayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9752BFCE027000A2662 /* ArrowMultiplayer.swift */; };
 		93E5F9782BFCE120000A2662 /* MultiplayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93E5F9772BFCE120000A2662 /* MultiplayerView.swift */; };
 		93F7DAC62BF90C270045A924 /* SingleplayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F7DAC52BF90C270045A924 /* SingleplayerView.swift */; };
 		93F7DAC82BF90C5D0045A924 /* ARViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93F7DAC72BF90C5D0045A924 /* ARViewContainer.swift */; };
@@ -47,7 +46,6 @@
 		93E5F8A22BF9FCB0000A2662 /* AccelometerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccelometerManager.swift; sourceTree = "<group>"; };
 		93E5F8A42BFA0729000A2662 /* TiltPhone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TiltPhone.swift; sourceTree = "<group>"; };
 		93E5F9732BFCDF8D000A2662 /* ControllerMultiplayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControllerMultiplayer.swift; sourceTree = "<group>"; };
-		93E5F9752BFCE027000A2662 /* ArrowMultiplayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowMultiplayer.swift; sourceTree = "<group>"; };
 		93E5F9772BFCE120000A2662 /* MultiplayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerView.swift; sourceTree = "<group>"; };
 		93E5F9792BFCE935000A2662 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		93F7DAC52BF90C270045A924 /* SingleplayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleplayerView.swift; sourceTree = "<group>"; };
@@ -71,7 +69,6 @@
 				938F1D112BF6517C00974243 /* Castle.swift */,
 				938F1D142BF6519B00974243 /* Zombie.swift */,
 				938F1D222BF788BB00974243 /* Arrow.swift */,
-				93E5F9752BFCE027000A2662 /* ArrowMultiplayer.swift */,
 			);
 			path = SceneNode;
 			sourceTree = "<group>";
@@ -211,7 +208,6 @@
 			files = (
 				93F7DAC62BF90C270045A924 /* SingleplayerView.swift in Sources */,
 				938F1D212BF7889700974243 /* MainView.swift in Sources */,
-				93E5F9762BFCE027000A2662 /* ArrowMultiplayer.swift in Sources */,
 				93ACD9BB2C00442E0011ABB4 /* DifficultyLevel.swift in Sources */,
 				93E5F9782BFCE120000A2662 /* MultiplayerView.swift in Sources */,
 				93E5F8A32BF9FCB0000A2662 /* AccelometerManager.swift in Sources */,

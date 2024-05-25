@@ -140,15 +140,10 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         let orientation = SCNVector3(-anchor.transform.columns.2.x,
                                      -anchor.transform.columns.2.y,
                                      -anchor.transform.columns.2.z)
-
-        // Calculate a position in front of the anchor by moving forward from the anchor's position
-        let forwardPosition = SCNVector3(position.x + orientation.x,
-                                         position.y + orientation.y,
-                                         position.z + orientation.z)
-
-        // Pass the sessionIdentifier to the Arrow
-        let arrow = ArrowMultiplayer(at: forwardPosition, at: orientation, sessionIdentifier: anchor.sessionIdentifier)
-        arrow.look(at: SCNVector3(forwardPosition.x + orientation.x, forwardPosition.y + orientation.y, forwardPosition.z + orientation.z))
+        
+        // Initiate Arrow
+        let arrow = Arrow(at: position, at: orientation)
+        arrow.look(at: SCNVector3(position.x + orientation.x, position.y + orientation.y, position.z + orientation.z))
 
         // Add the arrow to the scene
         parentNode.addChildNode(arrow)
