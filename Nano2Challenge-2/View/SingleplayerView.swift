@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SingleplayerView: View {
-//    @State private var spawningZombiePage: Int = 2
-//    @State private var checkFirstIndicator: Bool = true
+    //    @State private var spawningZombiePage: Int = 2
+    //    @State private var checkFirstIndicator: Bool = true
     @State private var showBackground: Bool = true
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var remainingTime: Int = 10
@@ -22,6 +22,7 @@ struct SingleplayerView: View {
     @State private var completeKilling: Bool = false
     @State private var showLevelUp: Bool = false
     @State private var youDiedIndicator: Bool = false
+    @State private var notNeedToShowAR: Bool = false
     
     var proTips = [
         "If you keep losing, it might be time to take a break.",
@@ -32,16 +33,16 @@ struct SingleplayerView: View {
     ]
     
     var levelText = ["Easy", "Medium", "Hard"]
-
-//    var gifNames = ["gif1", "gif2", "gif3", "gif4"]
+    
+    //    var gifNames = ["gif1", "gif2", "gif3", "gif4"]
     let deviceType = UIDevice.current.userInterfaceIdiom
     
     init() {
         // Initialize randomGIFName here
-//        if deviceType != .pad {
-//            gifNames = ["gif1", "gif4"]
-//        }
-//        _randomGIFName = State(initialValue: gifNames.randomElement() ?? "gif1")
+        //        if deviceType != .pad {
+        //            gifNames = ["gif1", "gif4"]
+        //        }
+        //        _randomGIFName = State(initialValue: gifNames.randomElement() ?? "gif1")
         
         _randomProTip = State(initialValue: proTips.randomElement() ?? "If you keep losing, it might be time to take a break.")
         
@@ -50,26 +51,27 @@ struct SingleplayerView: View {
     
     var body: some View {
         ZStack {
-            ARViewContainer(singleplayer: singleplayer)
-                .overlay(alignment: .bottom) {
-                    Button {
-                        ARManager.shared.actionStream.send(.attackButton)
-                    } label: {
-                        Image("AttackBowButton")
+            if !notNeedToShowAR {
+                ARViewContainer(singleplayer: singleplayer)
+                    .overlay(alignment: .bottom) {
+                        Button {
+                            ARManager.shared.actionStream.send(.attackButton)
+                        } label: {
+                            Image("AttackBowButton")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: UIScreen.main.bounds.width/8)
+                        }
+                        .position(x: UIScreen.main.bounds.width/1.12, y: deviceType == .pad ? UIScreen.main.bounds.height/1.18 :  UIScreen.main.bounds.height/1.3)
+                        
+                        Image(systemName: "plus")
                             .resizable()
+                            .foregroundColor(Color.white)
                             .scaledToFit()
-                            .frame(width: UIScreen.main.bounds.width/8)
-                    }
-                    .position(x: UIScreen.main.bounds.width/1.12, y: deviceType == .pad ? UIScreen.main.bounds.height/1.18 :  UIScreen.main.bounds.height/1.3)
-                    
-                    Image(systemName: "plus")
-                        .resizable()
-                        .foregroundColor(Color.white)
-                        .scaledToFit()
-                        .frame(width: 20, height: 20)
-                    
+                            .frame(width: 20, height: 20)
+                        
                 }
-                .navigationBarBackButtonHidden(true)
+            }
             
             if (showCompleteKilling) && !(youDiedIndicator) {
                 Image("LevelUpButton")
@@ -81,7 +83,7 @@ struct SingleplayerView: View {
                     .animation(Animation.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: bounce)
                     .onAppear {
                         bounce = true // Start the bounce animation
-//                        startCountdownLevelUp(remainingTime: 10)
+                        //                        startCountdownLevelUp(remainingTime: 10)
                     }
                     .onReceive(timer) {_ in
                         if timeRemainingShowLevelUp > 0 {
@@ -111,9 +113,9 @@ struct SingleplayerView: View {
                 }
             } else if completeKilling && !(youDiedIndicator) {
                 ZStack{ }
-                .onAppear {
-                    startCountdownCompleteKilling(remainingTime: 9)
-                }
+                    .onAppear {
+                        startCountdownCompleteKilling(remainingTime: 9)
+                    }
             }
             
             DifficultyLevel(difficultyLevel: difficultyLevel, difficultyText: levelText[difficultyLevel - 1])
@@ -164,9 +166,9 @@ struct SingleplayerView: View {
             }
             
             if youDiedIndicator {
-                EndGameView()
+                EndGameView(pageToGo: .constant(1), notNeedToShowAR: $notNeedToShowAR)
             }
-
+            
         }
         .onReceive(singleplayer.$completeKillingZombies.receive(on: DispatchQueue.main)) { value in
             completeKilling = value
@@ -175,6 +177,7 @@ struct SingleplayerView: View {
             youDiedIndicator = true
         }
         .ignoresSafeArea()
+        .navigationBarBackButtonHidden(true)
     }
     
     private func startCountdown() {
