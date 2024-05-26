@@ -44,8 +44,6 @@ class ARManager {
         configuration.isLightEstimationEnabled = true
         sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         sceneView.removeFromSuperview()
-        
-        print("succesfully resetted")
     }
     
     func setupARView(for parentView: UIView) {
@@ -53,8 +51,6 @@ class ARManager {
         parentView.addSubview(sceneView)
         sceneView.delegate = parentView as? ARSCNViewDelegate
         sceneView.session.delegate = parentView as? ARSessionDelegate
-        
-        print("succesfully added")
     }
 }
 
