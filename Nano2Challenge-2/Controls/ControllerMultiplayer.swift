@@ -14,31 +14,25 @@ import Combine
 import SwiftUI
 import MultipeerConnectivity
 
-//enum CollisionTypesMul: Int {
-//    case zombie = 1
-//    case castle = 2
-//    case arrow = 4
-//}
-
 class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDelegate, SCNPhysicsContactDelegate, ObservableObject {
     
     @IBOutlet var sceneView2: ARSCNView!
     private var timerStatusPlayer: Timer?
     private var player: Player? = nil
     
-    var multipeerSession: MultipeerSession?
-    var sessionIDObservation: NSKeyValueObservation?
+    var multipeerSession: MultipeerSession? = nil
+    var sessionIDObservation: NSKeyValueObservation? = nil
     
     private var cancellable: Set<AnyCancellable> = []
     private var cancellable1: Set<AnyCancellable> = []
-    private var spawnTimer: DispatchSourceTimer?
+    private var timerSpawnZombie: Timer?
     private var currentZPosition: Float = -5
     private let randomSource = GKRandomSource()
+    private var castle = Castle()
+    private var zombie: Zombie?
     
     private var isCastleAdded = false // Track if the castle has been added
-    private var isSpawningZombies = false // Track if zombie spawning has started
-    private var castleTransform: simd_float4x4?
-    private var previousCastleTransform: simd_float4x4?
+    @State private var spawningZombiePage = 2
     @Published var indicatorStopSpawnZombie: Bool = false
     
     @Published var message: String = ""
@@ -80,9 +74,12 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         super.viewWillDisappear(animated)
         
         // Invalidate the timer when the view disappears
-        spawnTimer?.cancel()
-        spawnTimer = nil
+        timerSpawnZombie?.invalidate()
         timerStatusPlayer?.invalidate()
+        
+        castle.removeFromParentNode()
+        zombie?.removeFromParentNode()
+        player?.removeFromParentNode()
         
         // Pause the view's session
         sceneView2.session.pause()
@@ -94,6 +91,36 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         sceneView2.removeFromSuperview()
     }
     
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        let nodeA = contact.nodeA
+        let nodeB = contact.nodeB
+        
+        if let castle = nodeA as? Castle, nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue {
+            contact.nodeB.physicsBody?.categoryBitMask = 0
+            nodeB.removeFromParentNode()
+            castle.takeDamage(spawningZombiePage: spawningZombiePage)
+        } else if let castle = nodeB as? Castle, nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue {
+            contact.nodeA.physicsBody?.categoryBitMask = 0
+            nodeA.removeFromParentNode()
+            castle.takeDamage(spawningZombiePage: spawningZombiePage)
+        }
+        
+        if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
+            
+            contact.nodeA.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
+            contact.nodeA.removeFromParentNode()
+            (contact.nodeB as? Zombie)?.takeDamage()
+            
+        } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) {
+            
+            contact.nodeB.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
+            contact.nodeB.removeFromParentNode()
+            (contact.nodeA as? Zombie)?.takeDamage()
+            
+        }
+        
+    }
+
     private func setupMessageObserver() {
         $message
             .receive(on: DispatchQueue.main) // Ensure updates are received on the main thread
@@ -111,6 +138,29 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     
     private func startTimer() {
         timerStatusPlayer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updatePlayerAnchor), userInfo: nil, repeats: true)
+    }
+    
+    private func startZombieTimer() {
+        timerSpawnZombie = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(updateZombieSpawn), userInfo: nil, repeats: true)
+    }
+    
+    @objc private func updateZombieSpawn() {
+        DispatchQueue.main.async {
+            // Generate a random x position between -5 and 5
+            let randomXPosition = Float(self.randomSource.nextInt(upperBound: 11)) - 5.0
+            let zombiePosition = SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition)
+            
+            if !(self.indicatorStopSpawnZombie) {
+                // Broadcast the position to other peers
+                self.broadcastZombiePosition(zombiePosition)
+                
+                self.spawnZombie(at: zombiePosition, for: self.sceneView2.scene.rootNode)
+            } else if self.indicatorStopSpawnZombie {
+                self.timerSpawnZombie?.invalidate()
+                self.indicatorStopSpawnZombie = false
+            }
+
+        }
     }
 
     @objc private func updatePlayerAnchor() {
@@ -171,27 +221,13 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     }
     
     private func playerDisplay(for parentNode: SCNNode, pass anchor: ARAnchor) {
-//        let timerBow = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(updateBowPosition), userInfo: nil, repeats: true)
-        
-//        guard let anchorBow = bowAnchorMany else { return }
-//        sceneView2.session.remove(anchor: anchorBow)
-//        bowAnchorMany = anchor
         
         let position = SCNVector3(anchor.transform.columns.3.x,
                                   anchor.transform.columns.3.y + 0.1,
                                   anchor.transform.columns.3.z)
         
-//        let orientation = SCNVector3(-anchor.transform.columns.2.x,
-//                                     -anchor.transform.columns.2.y,
-//                                     -anchor.transform.columns.2.z)
-//        
-//        let exactPos = SCNVector3(position.x + orientation.x,
-//                                  position.y + orientation.y + 0.5,
-//                                  position.z + orientation.z)
-        
         if player == nil {
             player = Player(at: position, pass: anchor)
-//            bow!.geometry?.firstMaterial?.diffuse.contents = anchor.sessionIdentifier?.toRandomColor() ?? .white
             parentNode.addChildNode(player!)
         } else {
             player?.position = position
@@ -199,76 +235,18 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         
     }
     
-//    @objc private func updateBowPosition() {
-//        guard let anchor = currentAnchor, let bow = bow else { return }
-//        
-//        let newPosition = SCNVector3(anchor.transform.columns.3.x,
-//                                     anchor.transform.columns.3.y,
-//                                     anchor.transform.columns.3.z)
-//        
-//        bow.position = newPosition
-////        print("Updated bow position: \(newPosition)")
-//    }
-    
-    private func startSpawningZombies(for parentNode: SCNNode) {
-        if !isSpawningZombies {
-            isSpawningZombies = true
-            // Create a dispatch timer to spawn zombies every 2 seconds
-            spawnTimer = DispatchSource.makeTimerSource()
-            spawnTimer?.schedule(deadline: .now(), repeating: 2.0)
-            spawnTimer?.setEventHandler { [weak self] in
-                guard let self = self else { return }
-                
-                DispatchQueue.main.async {
-                    // Generate a random x position between -5 and 5
-                    let randomXPosition = Float(self.randomSource.nextInt(upperBound: 11)) - 5.0
-                    let zombiePosition = SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition)
-    //                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
-                    
-                    if !(self.indicatorStopSpawnZombie) {
-                        // Broadcast the position to other peers
-                        self.broadcastZombiePosition(zombiePosition)
-                        
-                        // Spawn a zombie at the current position
-                        self.spawnZombie(at: zombiePosition, for: parentNode)
-                    } else if self.indicatorStopSpawnZombie {
-                        //add action win
-                        self.spawnTimer?.cancel()
-                    }
-
-                }
-            }
-            spawnTimer?.resume()
-        }
-    }
-    
     private func spawnZombie(at position: SCNVector3, for parentNode: SCNNode) {
-        let zombie = Zombie(at: position, timeWalking: 10.0)
-        parentNode.addChildNode(zombie)
+        zombie = Zombie(at: position, timeWalking: 10.0)
+        parentNode.addChildNode(zombie ?? Zombie(at: position, timeWalking: 10.0))
     }
     
     private func addCastle(for parentNode: SCNNode) {
         if !isCastleAdded {
             isCastleAdded = true
             
-            let castle = Castle()
             parentNode.addChildNode(castle)
-            
-//            if let castleTransform = castleTransform {
-//                broadcastCastlePosition(castleTransform)
-//            }
         }
     }
-    
-//    private func addCastle(at transform: simd_float4x4, for parentNode: SCNNode) {
-//        if !isCastleAdded {
-//            isCastleAdded = true
-//            
-//            let castle = Castle()
-//            castle.simdTransform = transform
-//            parentNode.addChildNode(castle)
-//        }
-//    }
     
     private func subscribeToActionStream() {
         ARManager2.shared2
@@ -281,37 +259,6 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                 }
             }
             .store(in: &cancellable)
-    }
-    
-    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
-        if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) {
-            
-            contact.nodeA.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
-            contact.nodeA.removeFromParentNode()
-            (contact.nodeB as? Castle)?.takeDamage(spawningZombiePage: 2)
-            
-        } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.castle.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
-
-            contact.nodeB.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
-            contact.nodeB.removeFromParentNode()
-            (contact.nodeA as? Castle)?.takeDamage(spawningZombiePage: 2)
-            
-        }
-        
-        if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) {
-            
-            contact.nodeA.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
-            contact.nodeA.removeFromParentNode()
-            (contact.nodeB as? Zombie)?.takeDamage()
-            
-        } else if (contact.nodeA.physicsBody?.categoryBitMask == CollisionTypes.zombie.rawValue) && (contact.nodeB.physicsBody?.categoryBitMask == CollisionTypes.arrow.rawValue) {
-            
-            contact.nodeB.physicsBody?.categoryBitMask = 0 // this is not needed, but should be used to handle bug (collision multiple times)
-            contact.nodeB.removeFromParentNode()
-            (contact.nodeA as? Zombie)?.takeDamage()
-            
-        }
-        
     }
 
     func session(_ session: ARSession, didAdd anchors: [ARAnchor]) {
@@ -327,20 +274,6 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             }
             
             if let participantAnchor = anchor as? ARParticipantAnchor {
-                DispatchQueue.main.async {
-                    self.castleTransform = participantAnchor.transform
-                    
-                    if let castleTransforms = self.castleTransform {
-                        let castleAnchor = ARAnchor(name: "castleZombieAnchor", transform: castleTransforms)
-                        self.sceneView2.session.add(anchor: castleAnchor)
-                        self.castleTransform = self.previousCastleTransform
-                    } else {
-                        print("Error: castleTransform is nil")
-                    }
-                }
-            }
-            
-            if anchor.name == "castleZombieAnchor" {
                 let dispatchGroup = DispatchGroup()
                 
                 dispatchGroup.enter()
@@ -353,13 +286,14 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                 
                 dispatchGroup.notify(queue: .main) {
                     // Add castle and start spawning zombies only after the message is updated
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 11.0) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 12.0) {
                         self.startTimer()
+                        self.startZombieTimer()
                         self.addCastle(for: self.sceneView2.scene.rootNode)
-                        self.startSpawningZombies(for: self.sceneView2.scene.rootNode)
                     }
                 }
             }
+            
         }
     }
 }
@@ -383,16 +317,9 @@ extension ControllerMultiplayer {
         
         // Create data from the mutable copy
         let positionData = Data(bytes: &mutablePosition, count: MemoryLayout<SCNVector3>.size)
-        
+        print("broadcast Zombie at position: \(mutablePosition.x) \(mutablePosition.y) \(mutablePosition.z)")
         multipeerSession.sendToAllPeers(positionData, reliably: true)
     }
-    
-//    private func broadcastCastlePosition(_ transform: simd_float4x4) {
-//        guard let multipeerSession = self.multipeerSession else { return }
-//        var transforms = transform
-//        let transformData = Data(bytes: &transforms, count: MemoryLayout<simd_float4x4>.size)
-//        multipeerSession.sendToAllPeers(transformData, reliably: true)
-//    }
     
     func receivedData(_ data: Data, from peer: MCPeerID) {
         guard let multipeerSession = multipeerSession else { return }
@@ -422,18 +349,11 @@ extension ControllerMultiplayer {
             var position = SCNVector3()
             _ = withUnsafeMutableBytes(of: &position) { data.copyBytes(to: $0) }
             DispatchQueue.main.async {
+                print("Get Zombie at position: \(position.x) \(position.y) \(position.z)")
                 self.spawnZombie(at: position, for: self.sceneView2.scene.rootNode)
             }
         }
         
-        // Handle simd_float4x4 transform data
-//        if data.count == MemoryLayout<simd_float4x4>.size {
-//            var transform = simd_float4x4()
-//            _ = withUnsafeMutableBytes(of: &transform) { data.copyBytes(to: $0) }
-//            DispatchQueue.main.async {
-//                self.addCastle(at: transform, for: self.sceneView2.scene.rootNode)
-//            }
-//        }
     }
 
     

@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct SingleplayerView: View {
-    //    @State private var spawningZombiePage: Int = 2
-    //    @State private var checkFirstIndicator: Bool = true
     @State private var showBackground: Bool = true
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var remainingTime: Int = 10
@@ -23,6 +21,7 @@ struct SingleplayerView: View {
     @State private var showLevelUp: Bool = false
     @State private var youDiedIndicator: Bool = false
     @State private var notNeedToShowAR: Bool = false
+    @State private var winIndicator: Bool = false
     
     var proTips = [
         "If you keep losing, it might be time to take a break.",
@@ -74,24 +73,30 @@ struct SingleplayerView: View {
             }
             
             if (showCompleteKilling) && !(youDiedIndicator) {
-                Image("LevelUpButton")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: UIScreen.main.bounds.width/9)
-                    .position(CGPoint(x: deviceType == .pad ? UIScreen.main.bounds.width/1.09 : UIScreen.main.bounds.width/1.1, y: deviceType == .pad ? UIScreen.main.bounds.height/4.5 : UIScreen.main.bounds.height/3.1))
-                    .offset(y: bounce ? -10 : 10) // Add offset to create bounce effect
-                    .animation(Animation.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: bounce)
-                    .onAppear {
-                        bounce = true // Start the bounce animation
-                        //                        startCountdownLevelUp(remainingTime: 10)
-                    }
-                    .onReceive(timer) {_ in
-                        if timeRemainingShowLevelUp > 0 {
-                            timeRemainingShowLevelUp -= 1
-                        } else {
-                            showLevelUp = true
+                if difficultyLevel == 3 {
+                    ZStack { }
+                        .onAppear {
+                            winIndicator = true
                         }
-                    }
+                } else {
+                    Image("LevelUpButton")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: UIScreen.main.bounds.width/9)
+                        .position(CGPoint(x: deviceType == .pad ? UIScreen.main.bounds.width/1.09 : UIScreen.main.bounds.width/1.1, y: deviceType == .pad ? UIScreen.main.bounds.height/4.5 : UIScreen.main.bounds.height/3.1))
+                        .offset(y: bounce ? -10 : 10) // Add offset to create bounce effect
+                        .animation(Animation.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: bounce)
+                        .onAppear {
+                            bounce = true // Start the bounce animation
+                        }
+                        .onReceive(timer) {_ in
+                            if timeRemainingShowLevelUp > 0 {
+                                timeRemainingShowLevelUp -= 1
+                            } else {
+                                showLevelUp = true
+                            }
+                        }
+                }
                 
                 if showLevelUp {
                     Button {
@@ -114,7 +119,7 @@ struct SingleplayerView: View {
             } else if completeKilling && !(youDiedIndicator) {
                 ZStack{ }
                     .onAppear {
-                        startCountdownCompleteKilling(remainingTime: 9)
+                        startCountdownCompleteKilling(remainingTime: 8)
                     }
             }
             
@@ -165,8 +170,8 @@ struct SingleplayerView: View {
                 }
             }
             
-            if youDiedIndicator {
-                EndGameView(pageToGo: .constant(1), notNeedToShowAR: $notNeedToShowAR)
+            if youDiedIndicator || winIndicator {
+                EndGameView(winningCondition: $winIndicator, pageToGo: .constant(1), notNeedToShowAR: $notNeedToShowAR)
             }
             
         }

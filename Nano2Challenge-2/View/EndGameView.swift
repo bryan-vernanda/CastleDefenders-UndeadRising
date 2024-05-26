@@ -10,50 +10,82 @@ import SwiftUI
 struct EndGameView: View {
     @State private var mainViewIndicator = false
     @State var playIndicator: Bool = false
+    @Binding var winningCondition: Bool
     @Binding var pageToGo: Int
     @Binding var notNeedToShowAR: Bool
+    let deviceType = UIDevice.current.userInterfaceIdiom
     
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(red: 190 / 255.0, green: 50 / 255.0, blue: 19 / 255.0, opacity: 0.3)
-                    .ignoresSafeArea()
-                VStack{
-                    Image("YouDiedText")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: UIScreen.main.bounds.width/5)
+                if !winningCondition {
+                    Color(red: 190 / 255.0, green: 50 / 255.0, blue: 19 / 255.0, opacity: 0.3)
+                        .ignoresSafeArea()
+                    VStack {
+                        Image("YouDiedText")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: UIScreen.main.bounds.width/5)
+                            .padding(.bottom)
+                        
+                        Image("TextEndDesc")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: UIScreen.main.bounds.width/2)
+                            .padding(.bottom, deviceType == .pad ? 98 : 64)
+                        
+                        Button(action: {
+                            notNeedToShowAR = true
+                            playIndicator = true
+                        }, label: {
+                            Image("RespawnButton")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: UIScreen.main.bounds.width/1.959)
+                            
+                        })
                         .padding(.bottom)
-                    
-                    Image("TextEndDesc")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: UIScreen.main.bounds.width/2)
-                        .padding(.bottom, 98)
-                    
-                    Button(action: {
-                        notNeedToShowAR = true
-                        playIndicator = true
-                    }, label: {
-                        Image("RespawnButton")
+                        
+                        Button(action: {
+                            notNeedToShowAR = true
+                            mainViewIndicator = true
+                        }, label: {
+                            Image("TitleScreenButton")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: UIScreen.main.bounds.width/1.959)
+                            
+                        })
+                        
+                    }
+                } else {
+                    Color.green
+                        .opacity(0.4)
+                        .ignoresSafeArea()
+                    VStack {
+                        Image("YouWinText")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: UIScreen.main.bounds.width/1.959)
-
-                    })
-                    .padding(.bottom)
-                    
-                    Button(action: {
-                        notNeedToShowAR = true
-                        mainViewIndicator = true
-                    }, label: {
-                        Image("TitleScreenButton")
+                            .frame(width: UIScreen.main.bounds.width/5)
+                            .padding(.bottom)
+                        
+                        Image("TextWinEndDesc")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: UIScreen.main.bounds.width/1.959)
-
-                    })
-                    
+                            .frame(width: UIScreen.main.bounds.width/2)
+                            .padding(.bottom, deviceType == .pad ? 98 : 64)
+                        
+                        Button(action: {
+                            notNeedToShowAR = true
+                            mainViewIndicator = true
+                        }, label: {
+                            Image("TitleScreenButton")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: UIScreen.main.bounds.width/1.959)
+                            
+                        })
+                    }
                 }
             }
             .navigationDestination(isPresented: $mainViewIndicator) {
@@ -61,15 +93,16 @@ struct EndGameView: View {
             }
             .navigationDestination(isPresented: $playIndicator) {
                 if pageToGo == 1 {
-                    SingleplayerView()
+                    TiltPhone()
                 } else {
                     MultiplayerView()
                 }
             }
+            .navigationBarBackButtonHidden(true)
         }
     }
 }
 
 #Preview {
-    EndGameView(pageToGo: .constant(1), notNeedToShowAR: .constant(false))
+    EndGameView(winningCondition: .constant(true), pageToGo: .constant(1), notNeedToShowAR: .constant(false))
 }

@@ -64,13 +64,13 @@ class Castle: SCNNode{
     func takeDamage(spawningZombiePage: Int) {
         
         if spawningZombiePage == 2 {
-            health -= 1
-            updateHealthBar()
-            
             if health <= 0 {
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: .castleDestroyed, object: nil)
                 }
+            } else {
+                health -= 1
+                updateHealthBar()
             }
         }
         
@@ -93,6 +93,9 @@ class Castle: SCNNode{
             healthBarNode.position = SCNVector3(x: 0.72, y: 0, z: 0)
         } else if health == 0 {
             healthBarNode.position = SCNVector3(x: 0.9, y: 0, z: 0)
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .castleDestroyed, object: nil)
+            }
         }
     }
 }

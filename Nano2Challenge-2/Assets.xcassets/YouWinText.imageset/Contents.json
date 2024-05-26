@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "QuitGameButton.png",
+      "filename" : "YouWinText.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "QuitGameButton 1.png",
+      "filename" : "YouWinText 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "QuitGameButton 2.png",
+      "filename" : "YouWinText 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -53,6 +53,7 @@ struct MainView: View {
                 MultiplayerView()
             }
             .ignoresSafeArea()
+            .navigationBarBackButtonHidden(true)
         }
     }
 }
