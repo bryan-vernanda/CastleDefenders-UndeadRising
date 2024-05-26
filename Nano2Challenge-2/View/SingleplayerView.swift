@@ -34,12 +34,6 @@ struct SingleplayerView: View {
     ]
     
     init() {
-        // Initialize randomGIFName here
-        //        if deviceType != .pad {
-        //            gifNames = ["gif1", "gif4"]
-        //        }
-        //        _randomGIFName = State(initialValue: gifNames.randomElement() ?? "gif1")
-        
         _randomProTip = State(initialValue: proTips.randomElement() ?? "If you keep losing, it might be time to take a break.")
         
         _singleplayer = StateObject(wrappedValue: ViewController(spawningZombiePage: .constant(2)))
@@ -80,10 +74,10 @@ struct SingleplayerView: View {
                                     .scaledToFit()
                                     .frame(width: UIScreen.main.bounds.width/9)
                                     .position(CGPoint(x: deviceType == .pad ? UIScreen.main.bounds.width/1.09 : UIScreen.main.bounds.width/1.1, y: deviceType == .pad ? UIScreen.main.bounds.height/4.5 : UIScreen.main.bounds.height/3.1))
-                                    .offset(y: bounce ? -10 : 10) // Add offset to create bounce effect
+                                    .offset(y: bounce ? -10 : 10)
                                     .animation(Animation.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: bounce)
                                     .onAppear {
-                                        bounce = true // Start the bounce animation
+                                        bounce = true
                                     }
                                     .onReceive(timer) {_ in
                                         if timeRemainingShowLevelUp > 0 {
@@ -150,7 +144,7 @@ struct SingleplayerView: View {
                                     Spacer()
                                     VStack {
                                         HStack {
-                                            Text("Game will start in...")
+                                            Text("Game will start in..")
                                                 .font(deviceType == .pad ? .title : .title2)
                                                 .foregroundColor(.black)
                                             Text("\(remainingTime)")

@@ -43,7 +43,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     }
     
     required init?(coder aDecoder: NSCoder) {
-        self._spawningZombiePage = Binding.constant(1)  // default value
+        self._spawningZombiePage = Binding.constant(1)
         super.init(coder: aDecoder)
     }
 
@@ -223,16 +223,12 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
             DispatchQueue.main.async {
                 // Generate a random x position between -5 and 5
                 let randomXPosition = Float(self.randomSource.nextInt(upperBound: 11)) - 5.0
-//                print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
                 
                 // Spawn a zombie at the current position & limit the zombies
                 if self.limitZombies < zombieLimitNumber {
-//                    print("Spawning zombie at x: \(randomXPosition), z: \(self.currentZPosition)")
-//                    print("\(zombieLimitNumber), \(timeSpawn), \(timeWalking), \(spawningCount)")
                     self.spawnZombie(at: SCNVector3(x: randomXPosition, y: -0.5, z: self.currentZPosition), for: parentNode, timeWalking: timeWalking)
                     if spawningCount == 2 {
                         self.limitZombies += 1
-//                        print("\(self.limitZombies)")
                     }
                 } else {
                     self.limitZombies = 0

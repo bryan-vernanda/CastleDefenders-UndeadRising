@@ -70,7 +70,7 @@ struct MultiplayerView: View {
                                         Color.white
                                             .ignoresSafeArea()
                                         VStack {
-                                            Spacer() // Pushes the VStack to the top
+                                            Spacer()
                                             HStack {
                                                 Image(systemName: "exclamationmark.circle")
                                                     .font(deviceType == .pad ? .title : .title2)
@@ -93,7 +93,7 @@ struct MultiplayerView: View {
                                             Spacer()
                                             VStack {
                                                 HStack {
-                                                    Text("Game will start in...")
+                                                    Text("Game will start in..")
                                                         .font(deviceType == .pad ? .title : .title2)
                                                         .foregroundColor(.black)
                                                     Text("\(remainingTime)")

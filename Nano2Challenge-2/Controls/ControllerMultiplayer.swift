@@ -106,7 +106,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     func removeZombieAndPlayerNodes() {
         // Loop through the child nodes of the root node
         for childNode in sceneView2.scene.rootNode.childNodes {
-            // Identify if the node is a zombie node
+            // Identify if the node is a zombie or a player node
             if (childNode.name == "zombie") || (childNode.name == "player") {
                 // Remove the zombie node from its parent node
                 childNode.removeFromParentNode()
@@ -220,7 +220,6 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
             self.receivedData, peerJoinedHandler: self.peerJoined, peerLeftHandler: self.peerLeft, peerDiscoveredHandler: self.peerDiscovered)
     }
     
-    //ini pasti bisa tapi ontap
     private func attackBowButton(for parentNode: SCNNode, pass anchor: ARAnchor) {
         // Get the position from the anchor's transform
         let position = SCNVector3(anchor.transform.columns.3.x,
@@ -341,7 +340,6 @@ extension ControllerMultiplayer {
         
         // Create data from the mutable copy
         let positionData = Data(bytes: &mutablePosition, count: MemoryLayout<SCNVector3>.size)
-        print("broadcast Zombie at position: \(mutablePosition.x) \(mutablePosition.y) \(mutablePosition.z)")
         multipeerSession.sendToAllPeers(positionData, reliably: true)
     }
     
@@ -373,7 +371,6 @@ extension ControllerMultiplayer {
             var position = SCNVector3()
             _ = withUnsafeMutableBytes(of: &position) { data.copyBytes(to: $0) }
             DispatchQueue.main.async {
-                print("Get Zombie at position: \(position.x) \(position.y) \(position.z)")
                 self.spawnZombie(at: position, for: self.sceneView2.scene.rootNode)
             }
         }
@@ -385,9 +382,8 @@ extension ControllerMultiplayer {
         guard let multipeerSession = multipeerSession else { return false }
         
         if multipeerSession.connectedPeers.count > 2 {
-            // Do not accept more than four users in the experience.
+            // Do not accept more than three users in the experience.
            print("A third player wants to join.The game is currently limited to two players")
-//            message = "A third player wants to join. The game is currently limited to two players"
             return false
         } else {
             return true

@@ -23,6 +23,7 @@ class Castle: SCNNode{
         
         //create physics node for the new physics body
         let physicsNode = SCNNode(geometry: largerShape) // the geometry inside is used only for debugging when changing the UIColor below
+        
         //make the node invisible
         physicsNode.geometry?.firstMaterial?.diffuse.contents = UIColor.clear
         
