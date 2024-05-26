@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "YouDiedText.png",
+      "filename" : "YouLoseText.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "YouDiedText 1.png",
+      "filename" : "YouLoseText 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "YouDiedText 2.png",
+      "filename" : "YouLoseText 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

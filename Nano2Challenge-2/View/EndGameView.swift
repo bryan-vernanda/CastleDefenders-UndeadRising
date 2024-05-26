@@ -23,10 +23,10 @@ struct EndGameView: View {
                     Color(red: 190 / 255.0, green: 50 / 255.0, blue: 19 / 255.0, opacity: 0.3)
                         .ignoresSafeArea()
                     VStack {
-                        Image("YouDiedText")
+                        Image("YouLoseText")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: UIScreen.main.bounds.width/5)
+                            .frame(width: UIScreen.main.bounds.width/4)
                             .padding(.bottom)
                         
                         Image("TextEndDesc")
@@ -116,5 +116,5 @@ struct EndGameView: View {
 }
 
 #Preview {
-    EndGameView(winningCondition: .constant(true), pageToGo: .constant(1), notNeedToShowAR: .constant(false))
+    EndGameView(winningCondition: .constant(false), pageToGo: .constant(1), notNeedToShowAR: .constant(false))
 }
