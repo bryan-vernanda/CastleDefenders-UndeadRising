@@ -9,7 +9,6 @@ import SwiftUI
 
 struct SingleplayerView: View {
     @State private var showBackground: Bool = true
-    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     @State private var remainingTime: Int = 10
     @State private var difficultyLevel: Int = 1
     @State private var timeRemainingShowLevelUp = 6
@@ -22,6 +21,9 @@ struct SingleplayerView: View {
     @State private var youDiedIndicator: Bool = false
     @State private var notNeedToShowAR: Bool = false
     @State private var winIndicator: Bool = false
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    var levelText = ["Easy", "Medium", "Hard"]
+    let deviceType = UIDevice.current.userInterfaceIdiom
     
     var proTips = [
         "If you keep losing, it might be time to take a break.",
@@ -30,11 +32,6 @@ struct SingleplayerView: View {
         "Play with a friend for an easier chance to win.",
         "If you lose, the restart button is your best friend."
     ]
-    
-    var levelText = ["Easy", "Medium", "Hard"]
-    
-    //    var gifNames = ["gif1", "gif2", "gif3", "gif4"]
-    let deviceType = UIDevice.current.userInterfaceIdiom
     
     init() {
         // Initialize randomGIFName here
@@ -152,14 +149,17 @@ struct SingleplayerView: View {
                                         .opacity(0.7)
                                     Spacer()
                                     VStack {
-                                        Text("Game will start in...")
-                                            .font(deviceType == .pad ? .title : .title2)
-                                            .foregroundColor(.black)
-                                        Text("\(remainingTime)")
-                                            .font(deviceType == .pad ? .largeTitle : .title)
-                                            .bold()
-                                            .foregroundColor(.black)
-                                            .padding(.bottom, deviceType == .pad ? 50 : 25)
+                                        HStack {
+                                            Text("Game will start in...")
+                                                .font(deviceType == .pad ? .title : .title2)
+                                                .foregroundColor(.black)
+                                            Text("\(remainingTime)")
+                                                .font(deviceType == .pad ? .title : .title2)
+                                                .bold()
+                                                .foregroundColor(.black)
+                                        }
+                                        LoadingAnimation()
+                                        .padding(.bottom, deviceType == .pad ? 50 : 25)
                                     }
                                     .padding(.bottom, 20)
                                 }

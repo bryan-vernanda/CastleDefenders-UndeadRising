@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		930CC5422C03479F00181AD7 /* LoadingAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 930CC5412C03479F00181AD7 /* LoadingAnimation.swift */; };
 		9345DA9D2C01B0480088C343 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9345DA9C2C01B0480088C343 /* Player.swift */; };
 		9345DA9F2C01D03D0088C343 /* EndGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9345DA9E2C01D03D0088C343 /* EndGameView.swift */; };
 		93733D702BFDA61100A8791C /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93733D6F2BFDA61100A8791C /* Launch Screen.storyboard */; };
@@ -31,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		930CC5412C03479F00181AD7 /* LoadingAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingAnimation.swift; sourceTree = "<group>"; };
 		9345DA9C2C01B0480088C343 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		9345DA9E2C01D03D0088C343 /* EndGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndGameView.swift; sourceTree = "<group>"; };
 		93733D6F2BFDA61100A8791C /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 				93E5F9772BFCE120000A2662 /* MultiplayerView.swift */,
 				93ACD9BA2C00442E0011ABB4 /* DifficultyLevel.swift */,
 				9345DA9E2C01D03D0088C343 /* EndGameView.swift */,
+				930CC5412C03479F00181AD7 /* LoadingAnimation.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -215,6 +218,7 @@
 				93F7DAC62BF90C270045A924 /* SingleplayerView.swift in Sources */,
 				938F1D212BF7889700974243 /* MainView.swift in Sources */,
 				93ACD9BB2C00442E0011ABB4 /* DifficultyLevel.swift in Sources */,
+				930CC5422C03479F00181AD7 /* LoadingAnimation.swift in Sources */,
 				93E5F9782BFCE120000A2662 /* MultiplayerView.swift in Sources */,
 				93E5F8A32BF9FCB0000A2662 /* AccelometerManager.swift in Sources */,
 				938F1D122BF6517C00974243 /* Castle.swift in Sources */,

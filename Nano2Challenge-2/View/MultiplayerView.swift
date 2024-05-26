@@ -91,14 +91,17 @@ struct MultiplayerView: View {
                                                 .opacity(0.7)
                                             Spacer()
                                             VStack {
-                                                Text("Game will start in...")
-                                                    .font(deviceType == .pad ? .title : .title2)
-                                                    .foregroundColor(.black)
-                                                Text("\(remainingTime)")
-                                                    .font(deviceType == .pad ? .largeTitle : .title)
-                                                    .bold()
-                                                    .foregroundColor(.black)
-                                                    .padding(.bottom, deviceType == .pad ? 50 : 25)
+                                                HStack {
+                                                    Text("Game will start in...")
+                                                        .font(deviceType == .pad ? .title : .title2)
+                                                        .foregroundColor(.black)
+                                                    Text("\(remainingTime)")
+                                                        .font(deviceType == .pad ? .title : .title2)
+                                                        .bold()
+                                                        .foregroundColor(.black)
+                                                }
+                                                LoadingAnimation()
+                                                .padding(.bottom, deviceType == .pad ? 50 : 25)
                                             }
                                             .padding(.bottom, 20)
                                         }
