@@ -24,6 +24,7 @@ class Player: SCNNode{
         
         self.addChildNode(triangleNode)
         
+        self.name = "player"
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -13,6 +13,7 @@ struct EndGameView: View {
     @Binding var winningCondition: Bool
     @Binding var pageToGo: Int
     @Binding var notNeedToShowAR: Bool
+    @State private var checkButtonPressed: Int = 0
     let deviceType = UIDevice.current.userInterfaceIdiom
     
     var body: some View {
@@ -36,7 +37,7 @@ struct EndGameView: View {
                         
                         Button(action: {
                             notNeedToShowAR = true
-                            playIndicator = true
+                            checkButtonPressed = 2
                         }, label: {
                             Image("RespawnButton")
                                 .resizable()
@@ -48,7 +49,7 @@ struct EndGameView: View {
                         
                         Button(action: {
                             notNeedToShowAR = true
-                            mainViewIndicator = true
+                            checkButtonPressed = 1
                         }, label: {
                             Image("TitleScreenButton")
                                 .resizable()
@@ -77,7 +78,7 @@ struct EndGameView: View {
                         
                         Button(action: {
                             notNeedToShowAR = true
-                            mainViewIndicator = true
+                            checkButtonPressed = 1
                         }, label: {
                             Image("TitleScreenButton")
                                 .resizable()
@@ -88,6 +89,17 @@ struct EndGameView: View {
                     }
                 }
             }
+            .onChange(of: notNeedToShowAR, { _, newValue in
+                if newValue {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                        if checkButtonPressed == 1 {
+                            mainViewIndicator = true
+                        } else if checkButtonPressed == 2 {
+                            playIndicator = true
+                        }
+                    }
+                }
+            })
             .navigationDestination(isPresented: $mainViewIndicator) {
                 MainView()
             }

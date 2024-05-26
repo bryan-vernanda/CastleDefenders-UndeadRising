@@ -40,9 +40,9 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        sceneView2 = ARManager2.shared2.sceneView2
-        sceneView2.frame = self.view.frame
-        self.view.addSubview(sceneView2)
+        ARManager.shared.setupARView(for: self.view)
+        
+        sceneView2 = ARManager.shared.sceneView
         
         // Set the view's delegate
         sceneView2.delegate = self
@@ -78,8 +78,18 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         timerStatusPlayer?.invalidate()
         
         castle.removeFromParentNode()
-        zombie?.removeFromParentNode()
-        player?.removeFromParentNode()
+        removeZombieAndPlayerNodes()
+        
+        sessionIDObservation?.invalidate()
+        sessionIDObservation = nil
+        
+        cancellable.forEach { $0.cancel() }
+        cancellable.removeAll()
+        cancellable1.forEach { $0.cancel() }
+        cancellable1.removeAll()
+        
+        multipeerSession?.disconnect()
+        multipeerSession = nil
         
         // Pause the view's session
         sceneView2.session.pause()
@@ -89,6 +99,27 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         configuration.isLightEstimationEnabled = true
         sceneView2.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         sceneView2.removeFromSuperview()
+        
+        ARManager.shared.reset()
+    }
+    
+    func removeZombieAndPlayerNodes() {
+        // Loop through the child nodes of the root node
+        for childNode in sceneView2.scene.rootNode.childNodes {
+            // Identify if the node is a zombie node
+            if childNode.name == "zombie" {
+                // Remove the zombie node from its parent node
+                childNode.removeFromParentNode()
+            }
+        }
+        
+        for childNode in sceneView2.scene.rootNode.childNodes {
+            // Identify if the node is a player node
+            if childNode.name == "player" {
+                // Remove the player node from its parent node
+                childNode.removeFromParentNode()
+            }
+        }
     }
     
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
@@ -249,7 +280,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     }
     
     private func subscribeToActionStream() {
-        ARManager2.shared2
+        ARManager.shared
             .actionStream2
             .sink { [weak self] action in
                 guard let self = self else { return }

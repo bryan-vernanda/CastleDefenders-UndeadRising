@@ -12,6 +12,8 @@ struct MainView: View {
 //    @State private var checkFirstIndicator: Bool = true
     @State private var navigateToGameplayView: Bool = false
     @State private var navigateToMultiplayerView: Bool = false
+    @State private var checkStatusNotShowingAR2: Bool = false
+    @State private var checkStatusNotShowingAR1: Bool = false
     @StateObject private var singleplayer: ViewController
     
     init() {
@@ -21,7 +23,7 @@ struct MainView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                if !navigateToGameplayView {
+                if !checkStatusNotShowingAR1 && !checkStatusNotShowingAR2 {
                     ARViewContainer(singleplayer: singleplayer)
                 }
                 
@@ -46,10 +48,26 @@ struct MainView: View {
                     }
                 }
             }
-            .navigationDestination(isPresented: $navigateToGameplayView) {
+            .onChange(of: navigateToGameplayView, { _, newValue in
+                if newValue {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                        // Delay to ensure ARViewContainer has time to run
+                        checkStatusNotShowingAR1 = true
+                    }
+                }
+            })
+            .onChange(of: navigateToMultiplayerView, { _, newValue in
+                if newValue {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                        // Delay to ensure ARViewContainer has time to run
+                        checkStatusNotShowingAR2 = true
+                    }
+                }
+            })
+            .navigationDestination(isPresented: $checkStatusNotShowingAR1) {
                 TiltPhone()
             }
-            .navigationDestination(isPresented: $navigateToMultiplayerView) {
+            .navigationDestination(isPresented: $checkStatusNotShowingAR2) {
                 MultiplayerView()
             }
             .ignoresSafeArea()

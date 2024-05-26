@@ -109,7 +109,7 @@ struct MultiplayerView: View {
                                     }
                                 } else {
                                     Button {
-                                        ARManager2.shared2.actionStream2.send(.attackButton)
+                                        ARManager.shared.actionStream2.send(.attackButton)
                                     } label: {
                                         Image("AttackBowButton")
                                             .resizable()

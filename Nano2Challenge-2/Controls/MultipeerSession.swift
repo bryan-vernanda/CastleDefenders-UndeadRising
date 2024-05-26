@@ -64,6 +64,16 @@ open class MultipeerSession: NSObject {
         sendToPeers(data, reliably: reliably, peers: connectedPeers)
     }
     
+    func disconnect() {
+        session.disconnect()
+        serviceAdvertiser.stopAdvertisingPeer()
+        serviceBrowser.stopBrowsingForPeers()
+        
+        session = nil
+        serviceAdvertiser = nil
+        serviceBrowser = nil
+    }
+    
     /// - Tag: SendToPeers
     public func sendToPeers(_ data: Data, reliably: Bool, peers: [MCPeerID]) {
         guard !peers.isEmpty else { return }

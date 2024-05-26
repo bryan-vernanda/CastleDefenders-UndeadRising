@@ -69,105 +69,106 @@ struct SingleplayerView: View {
                             .scaledToFit()
                             .frame(width: 20, height: 20)
                         
-                }
-            }
-            
-            if (showCompleteKilling) && !(youDiedIndicator) {
-                if difficultyLevel == 3 {
-                    ZStack { }
-                        .onAppear {
-                            winIndicator = true
-                        }
-                } else {
-                    Image("LevelUpButton")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: UIScreen.main.bounds.width/9)
-                        .position(CGPoint(x: deviceType == .pad ? UIScreen.main.bounds.width/1.09 : UIScreen.main.bounds.width/1.1, y: deviceType == .pad ? UIScreen.main.bounds.height/4.5 : UIScreen.main.bounds.height/3.1))
-                        .offset(y: bounce ? -10 : 10) // Add offset to create bounce effect
-                        .animation(Animation.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: bounce)
-                        .onAppear {
-                            bounce = true // Start the bounce animation
-                        }
-                        .onReceive(timer) {_ in
-                            if timeRemainingShowLevelUp > 0 {
-                                timeRemainingShowLevelUp -= 1
+                        
+                        
+                        if (showCompleteKilling) && !(youDiedIndicator) {
+                            if difficultyLevel == 3 {
+                                ZStack { }
+                                    .onAppear {
+                                        winIndicator = true
+                                    }
                             } else {
-                                showLevelUp = true
+                                Image("LevelUpButton")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: UIScreen.main.bounds.width/9)
+                                    .position(CGPoint(x: deviceType == .pad ? UIScreen.main.bounds.width/1.09 : UIScreen.main.bounds.width/1.1, y: deviceType == .pad ? UIScreen.main.bounds.height/4.5 : UIScreen.main.bounds.height/3.1))
+                                    .offset(y: bounce ? -10 : 10) // Add offset to create bounce effect
+                                    .animation(Animation.easeInOut(duration: 0.6).repeatForever(autoreverses: true), value: bounce)
+                                    .onAppear {
+                                        bounce = true // Start the bounce animation
+                                    }
+                                    .onReceive(timer) {_ in
+                                        if timeRemainingShowLevelUp > 0 {
+                                            timeRemainingShowLevelUp -= 1
+                                        } else {
+                                            showLevelUp = true
+                                        }
+                                    }
+                            }
+                            
+                            if showLevelUp {
+                                Button {
+                                    ARManager.shared.actionStreamContinue.send(.continueButton)
+                                    showLevelUp = false
+                                    showBackground = true
+                                    remainingTime = 10
+                                    timeRemainingShowLevelUp = 6
+                                    showCompleteKilling = false
+                                    bounce = false
+                                    difficultyLevel += 1
+                                } label: {
+                                    Image("NextLevelButton")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: UIScreen.main.bounds.width / 10)
+                                }
+                                .position(CGPoint(x: deviceType == .pad ? UIScreen.main.bounds.width/1.09 : UIScreen.main.bounds.width/1.1, y: deviceType == .pad ? UIScreen.main.bounds.height/13 : UIScreen.main.bounds.height/8.5))
+                            }
+                        } else if completeKilling && !(youDiedIndicator) {
+                            ZStack{ }
+                                .onAppear {
+                                    startCountdownCompleteKilling(remainingTime: 8)
+                                }
+                        }
+                        
+                        DifficultyLevel(difficultyLevel: difficultyLevel, difficultyText: levelText[difficultyLevel - 1])
+                            .position(CGPoint(x: deviceType == .pad ? UIScreen.main.bounds.width/6.5 : UIScreen.main.bounds.width/6, y: deviceType == .pad ? UIScreen.main.bounds.height/1.07 : UIScreen.main.bounds.height/1.1))
+                        
+                        if showBackground {
+                            ZStack {
+                                Color.white
+                                    .ignoresSafeArea()
+                                VStack {
+                                    Spacer()
+                                    HStack {
+                                        Image(systemName: "exclamationmark.circle")
+                                            .font(deviceType == .pad ? .title : .title2)
+                                            .bold()
+                                            .foregroundColor(.red)
+                                        Text("Objective")
+                                            .font(deviceType == .pad ? .title : .title2)
+                                            .bold()
+                                            .foregroundColor(.red)
+                                    }
+                                    .padding(.bottom, 2)
+                                    Text("⚔️ Kill all the zombies to protect the Castle! ⚔️")
+                                        .font(deviceType == .pad ? .title : .title2)
+                                        .foregroundColor(.black)
+                                        .padding(.bottom, 7)
+                                    Text("Tip: \(randomProTip)")
+                                        .font(deviceType == .pad ? .title3 : .subheadline)
+                                        .foregroundColor(.black)
+                                        .opacity(0.7)
+                                    Spacer()
+                                    VStack {
+                                        Text("Game will start in...")
+                                            .font(deviceType == .pad ? .title : .title2)
+                                            .foregroundColor(.black)
+                                        Text("\(remainingTime)")
+                                            .font(deviceType == .pad ? .largeTitle : .title)
+                                            .bold()
+                                            .foregroundColor(.black)
+                                            .padding(.bottom, deviceType == .pad ? 50 : 25)
+                                    }
+                                    .padding(.bottom, 20)
+                                }
+                            }
+                            .onAppear{
+                                startCountdown()
                             }
                         }
-                }
-                
-                if showLevelUp {
-                    Button {
-                        ARManager.shared.actionStreamContinue.send(.continueButton)
-                        showLevelUp = false
-                        showBackground = true
-                        remainingTime = 10
-                        timeRemainingShowLevelUp = 6
-                        showCompleteKilling = false
-                        bounce = false
-                        difficultyLevel += 1
-                    } label: {
-                        Image("NextLevelButton")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: UIScreen.main.bounds.width / 10)
                     }
-                    .position(CGPoint(x: deviceType == .pad ? UIScreen.main.bounds.width/1.09 : UIScreen.main.bounds.width/1.1, y: deviceType == .pad ? UIScreen.main.bounds.height/13 : UIScreen.main.bounds.height/8.5))
-                }
-            } else if completeKilling && !(youDiedIndicator) {
-                ZStack{ }
-                    .onAppear {
-                        startCountdownCompleteKilling(remainingTime: 8)
-                    }
-            }
-            
-            DifficultyLevel(difficultyLevel: difficultyLevel, difficultyText: levelText[difficultyLevel - 1])
-                .position(CGPoint(x: deviceType == .pad ? UIScreen.main.bounds.width/6.5 : UIScreen.main.bounds.width/6, y: deviceType == .pad ? UIScreen.main.bounds.height/1.07 : UIScreen.main.bounds.height/1.1))
-            
-            if showBackground {
-                ZStack {
-                    Color.white
-                        .ignoresSafeArea()
-                    VStack {
-                        Spacer()
-                        HStack {
-                            Image(systemName: "exclamationmark.circle")
-                                .font(deviceType == .pad ? .title : .title2)
-                                .bold()
-                                .foregroundColor(.red)
-                            Text("Objective")
-                                .font(deviceType == .pad ? .title : .title2)
-                                .bold()
-                                .foregroundColor(.red)
-                        }
-                        .padding(.bottom, 2)
-                        Text("⚔️ Kill all the zombies to protect the Castle! ⚔️")
-                            .font(deviceType == .pad ? .title : .title2)
-                            .foregroundColor(.black)
-                            .padding(.bottom, 7)
-                        Text("Tip: \(randomProTip)")
-                            .font(deviceType == .pad ? .title3 : .subheadline)
-                            .foregroundColor(.black)
-                            .opacity(0.7)
-                        Spacer()
-                        VStack {
-                            Text("Game will start in...")
-                                .font(deviceType == .pad ? .title : .title2)
-                                .foregroundColor(.black)
-                            Text("\(remainingTime)")
-                                .font(deviceType == .pad ? .largeTitle : .title)
-                                .bold()
-                                .foregroundColor(.black)
-                                .padding(.bottom, deviceType == .pad ? 50 : 25)
-                        }
-                        .padding(.bottom, 20)
-                    }
-                }
-                .onAppear{
-                    startCountdown()
-                }
             }
             
             if youDiedIndicator || winIndicator {

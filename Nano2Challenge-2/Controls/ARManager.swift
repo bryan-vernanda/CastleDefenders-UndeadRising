@@ -35,17 +35,52 @@ class ARManager {
     
     let sceneView: ARSCNView
     var actionStream = PassthroughSubject<ARAction, Never>()
+    var actionStream2 = PassthroughSubject<ARAction2, Never>()
     var actionStreamContinue = PassthroughSubject<ARActionContinue, Never>()
-}
-
-class ARManager2 {
-    static let shared2 = ARManager2()
     
-    private init() {
-        sceneView2 = ARSCNView()
+    func reset() {
+        sceneView.session.pause()
+        let configuration = ARWorldTrackingConfiguration()
+        configuration.isLightEstimationEnabled = true
+        sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+        sceneView.removeFromSuperview()
+        
+        print("succesfully resetted")
     }
     
-    let sceneView2: ARSCNView
-    var actionStream2 = PassthroughSubject<ARAction2, Never>()
-//    var actionStreamZombie = PassthroughSubject<ARActionZombie, Never>()
+    func setupARView(for parentView: UIView) {
+        sceneView.frame = parentView.frame
+        parentView.addSubview(sceneView)
+        sceneView.delegate = parentView as? ARSCNViewDelegate
+        sceneView.session.delegate = parentView as? ARSessionDelegate
+        
+        print("succesfully added")
+    }
 }
+
+//class ARManager2 {
+//    static let shared2 = ARManager2()
+//    
+//    private init() {
+//        sceneView2 = ARSCNView()
+//    }
+//    
+//    let sceneView2: ARSCNView
+//    var actionStream2 = PassthroughSubject<ARAction2, Never>()
+////    var actionStreamZombie = PassthroughSubject<ARActionZombie, Never>()
+//    
+//    func reset() {
+//        sceneView2.session.pause()
+//        let configuration = ARWorldTrackingConfiguration()
+//        configuration.isLightEstimationEnabled = true
+//        sceneView2.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
+//        sceneView2.removeFromSuperview()
+//    }
+//    
+//    func setupARView(for parentView: UIView) {
+//        sceneView2.frame = parentView.frame
+//        parentView.addSubview(sceneView2)
+//        sceneView2.delegate = parentView as? ARSCNViewDelegate
+//        sceneView2.session.delegate = parentView as? ARSessionDelegate
+//    }
+//}

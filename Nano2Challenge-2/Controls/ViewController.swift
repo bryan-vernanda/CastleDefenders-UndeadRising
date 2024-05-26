@@ -50,9 +50,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        ARManager.shared.setupARView(for: self.view)
+        
         sceneView = ARManager.shared.sceneView
-        sceneView.frame = self.view.frame
-        self.view.addSubview(sceneView)
         
         // Set the view's delegate
         sceneView.delegate = self
@@ -106,7 +106,6 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         let configuration = ARWorldTrackingConfiguration()
         configuration.planeDetection = [.horizontal, .vertical]
         configuration.environmentTexturing = .automatic
-//        configuration.planeDetection = .horizontal
 
         // Run the view's session
         sceneView.session.run(configuration)
@@ -131,6 +130,8 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         configuration.isLightEstimationEnabled = true
         sceneView.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
         sceneView.removeFromSuperview()
+        
+        ARManager.shared.reset()
     }
 
     // MARK: - ARSCNViewDelegate

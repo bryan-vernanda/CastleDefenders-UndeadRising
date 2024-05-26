@@ -58,6 +58,8 @@ class Zombie: SCNNode {
             let moveAction = SCNAction.move(to: SCNVector3(x: 0, y: 0, z: 0.5), duration: timeWalking)
             self.runAction(moveAction)
         }
+        
+        self.name = "zombie"
     }
     
     required init?(coder aDecoder: NSCoder) {
