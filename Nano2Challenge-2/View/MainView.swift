@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct MainView: View {
-//    @State private var spawningZombiePage: Int = 1
-//    @State private var checkFirstIndicator: Bool = true
     @State private var navigateToGameplayView: Bool = false
     @State private var navigateToMultiplayerView: Bool = false
     @State private var checkStatusNotShowingAR2: Bool = false

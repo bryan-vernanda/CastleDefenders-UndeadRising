@@ -64,7 +64,7 @@ open class MultipeerSession: NSObject {
         sendToPeers(data, reliably: reliably, peers: connectedPeers)
     }
     
-    func disconnect() {
+    public func disconnect() {
         session.disconnect()
         serviceAdvertiser.stopAdvertisingPeer()
         serviceBrowser.stopBrowsingForPeers()

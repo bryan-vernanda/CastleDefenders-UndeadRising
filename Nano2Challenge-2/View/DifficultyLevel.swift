@@ -79,7 +79,6 @@ struct DifficultyTextView: View {
 struct DifficultyLevel: View {
     var difficultyLevel: Int = 1
     var difficultyText: String = "Easy"
-    //adjust next level sama temennya
     var body: some View {
             VStack {
                 DifficultyLevelView(difficulty: difficultyLevel)

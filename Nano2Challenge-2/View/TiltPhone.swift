@@ -11,7 +11,6 @@ import Combine
 struct TiltPhone: View {
     @ObservedObject private var accelManager = AccelometerManager.shared
     @State private var navigateToGameplayView: Bool = false
-//    private let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     @State private var timerCancellable: AnyCancellable?
     let deviceType = UIDevice.current.userInterfaceIdiom
     

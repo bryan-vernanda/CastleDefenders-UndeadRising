@@ -122,6 +122,9 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         spawnTimer?.cancel()
         spawnTimer = nil
         
+        castle.removeFromParentNode()
+        removeZombieAndPlayerNodes()
+        
         // Pause the view's session
         sceneView.session.pause()
         
@@ -132,6 +135,17 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         sceneView.removeFromSuperview()
         
         ARManager.shared.reset()
+    }
+    
+    func removeZombieAndPlayerNodes() {
+        // Loop through the child nodes of the root node
+        for childNode in sceneView.scene.rootNode.childNodes {
+            // Identify if the node is a zombie node
+            if childNode.name == "zombie" {
+                // Remove the zombie node from its parent node
+                childNode.removeFromParentNode()
+            }
+        }
     }
 
     // MARK: - ARSCNViewDelegate

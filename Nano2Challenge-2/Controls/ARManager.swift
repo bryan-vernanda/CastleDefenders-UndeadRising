@@ -21,11 +21,6 @@ enum ARAction2 {
     case attackButton
 }
 
-enum ARActionZombie {
-    case firstPage
-    case secondPage
-}
-
 class ARManager {
     static let shared = ARManager()
     
@@ -53,30 +48,3 @@ class ARManager {
         sceneView.session.delegate = parentView as? ARSessionDelegate
     }
 }
-
-//class ARManager2 {
-//    static let shared2 = ARManager2()
-//    
-//    private init() {
-//        sceneView2 = ARSCNView()
-//    }
-//    
-//    let sceneView2: ARSCNView
-//    var actionStream2 = PassthroughSubject<ARAction2, Never>()
-////    var actionStreamZombie = PassthroughSubject<ARActionZombie, Never>()
-//    
-//    func reset() {
-//        sceneView2.session.pause()
-//        let configuration = ARWorldTrackingConfiguration()
-//        configuration.isLightEstimationEnabled = true
-//        sceneView2.session.run(configuration, options: [.resetTracking, .removeExistingAnchors])
-//        sceneView2.removeFromSuperview()
-//    }
-//    
-//    func setupARView(for parentView: UIView) {
-//        sceneView2.frame = parentView.frame
-//        parentView.addSubview(sceneView2)
-//        sceneView2.delegate = parentView as? ARSCNViewDelegate
-//        sceneView2.session.delegate = parentView as? ARSessionDelegate
-//    }
-//}

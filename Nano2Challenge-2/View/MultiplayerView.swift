@@ -196,7 +196,7 @@ struct MultiplayerView: View {
                 if youDiedIndicator || waitUntilWins {
                     EndGameView(winningCondition: $winIndicator, pageToGo: .constant(2), notNeedToShowAR: $notNeedToShowAR)
                 }
-
+                
             }
             .onReceive(multiplayer.$message.receive(on: DispatchQueue.main)) { value in
                 message = value
@@ -254,7 +254,7 @@ struct MultiplayerView: View {
             }
         }
     }
-   
+    
 }
 
 #Preview {

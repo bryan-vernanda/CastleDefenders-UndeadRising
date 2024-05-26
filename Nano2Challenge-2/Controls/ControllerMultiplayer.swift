@@ -107,19 +107,12 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
         // Loop through the child nodes of the root node
         for childNode in sceneView2.scene.rootNode.childNodes {
             // Identify if the node is a zombie node
-            if childNode.name == "zombie" {
+            if (childNode.name == "zombie") || (childNode.name == "player") {
                 // Remove the zombie node from its parent node
                 childNode.removeFromParentNode()
             }
         }
         
-        for childNode in sceneView2.scene.rootNode.childNodes {
-            // Identify if the node is a player node
-            if childNode.name == "player" {
-                // Remove the player node from its parent node
-                childNode.removeFromParentNode()
-            }
-        }
     }
     
     func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
