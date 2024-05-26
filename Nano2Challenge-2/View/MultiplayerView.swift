@@ -22,6 +22,7 @@ struct MultiplayerView: View {
     @State private var notNeedToShowAR: Bool = false
     @State private var winIndicator: Bool = false
     @State private var waitUntilWins: Bool = false
+    @State private var showMessage: Bool = true
     
     var proTips = [
         "If you keep losing, it might be time to take a break.",
@@ -108,6 +109,7 @@ struct MultiplayerView: View {
                                     }
                                     .onAppear{
                                         showConnectedStatus = false
+                                        showMessage = false
                                         startCountdown()
                                     }
                                 } else {
@@ -137,23 +139,25 @@ struct MultiplayerView: View {
                                         .position(CGPoint(x: UIScreen.main.bounds.width/2, y: deviceType == .pad ? UIScreen.main.bounds.height/20 : UIScreen.main.bounds.height/13))
                                 }
                             } else {
-                                VStack {
-                                    ZStack {
-                                        Rectangle()
-                                            .fill(Color.black)
-                                            .opacity(0.5)
-                                            .frame(height: deviceType == .pad ? 70 : 60)
-                                            .edgesIgnoringSafeArea(.top)
-                                        HStack {
-                                            Text(message)
-                                                .font(deviceType == .pad ? .title2 : .title3)
-                                                .foregroundColor(.white)
-                                            Spacer()
+                                if showMessage == true {
+                                    VStack {
+                                        ZStack {
+                                            Rectangle()
+                                                .fill(Color.black)
+                                                .opacity(0.5)
+                                                .frame(height: deviceType == .pad ? 70 : 60)
+                                                .edgesIgnoringSafeArea(.top)
+                                            HStack {
+                                                Text(message)
+                                                    .font(deviceType == .pad ? .title2 : .title3)
+                                                    .foregroundColor(.white)
+                                                Spacer()
+                                            }
+                                            .padding(deviceType == .pad ? EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16) : EdgeInsets(top: 16, leading: 40, bottom: 16, trailing: 16))
+                                            
                                         }
-                                        .padding(deviceType == .pad ? EdgeInsets(top: 16, leading: 16, bottom: 16, trailing: 16) : EdgeInsets(top: 16, leading: 40, bottom: 16, trailing: 16))
-                                        
+                                        Spacer()
                                     }
-                                    Spacer()
                                 }
                             }
                             
