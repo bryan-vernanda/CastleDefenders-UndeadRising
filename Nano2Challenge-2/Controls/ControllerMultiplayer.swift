@@ -165,7 +165,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
     }
     
     private func startZombieTimer() {
-        timerSpawnZombie = Timer.scheduledTimer(timeInterval: 3.0, target: self, selector: #selector(updateZombieSpawn), userInfo: nil, repeats: true)
+        timerSpawnZombie = Timer.scheduledTimer(timeInterval: 2.5, target: self, selector: #selector(updateZombieSpawn), userInfo: nil, repeats: true)
     }
     
     @objc private func updateZombieSpawn() {
@@ -309,7 +309,7 @@ class ControllerMultiplayer: UIViewController, ARSCNViewDelegate, ARSessionDeleg
                 
                 dispatchGroup.notify(queue: .main) {
                     // Add castle and start spawning zombies only after the message is updated
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 12.0) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 11.0) {
                         self.startTimer()
                         self.startZombieTimer()
                         self.addCastle(for: self.sceneView2.scene.rootNode)
