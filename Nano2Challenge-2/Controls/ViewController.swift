@@ -188,13 +188,15 @@ class ViewController: UIViewController, ARSCNViewDelegate, SCNPhysicsContactDele
         ARManager.shared
             .actionStreamContinue
             .sink { [weak self] action in //to make sure no app crashing or memory leaks, use weak self
-                self?.zombieNumSpawn += 20
-                self?.timeSpawn -= 0.5
-                self?.timeWalking -= 2.0
-                self?.completeKillingZombies = false
-                self?.castle.healBackCastle()
                 switch action {
                     case .continueButton:
+                    DispatchQueue.main.asyncAfter(deadline: .now()) {
+                        self?.zombieNumSpawn += 20
+                        self?.timeSpawn -= 0.5
+                        self?.timeWalking -= 2.0
+                        self?.completeKillingZombies = false
+                        self?.castle.healBackCastle()
+                    }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 11.0) {
                         self?.startSpawningZombies(for: node, spawningCount: spawningCount, zombieLimitNumber: self?.zombieNumSpawn ?? 20, timeSpawn: self?.timeSpawn ?? 20.0, timeWalking: self?.timeWalking ?? 20.0)
                     }

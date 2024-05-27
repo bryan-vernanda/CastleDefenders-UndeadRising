@@ -91,13 +91,16 @@ struct SingleplayerView: View {
                             if showLevelUp {
                                 Button {
                                     ARManager.shared.actionStreamContinue.send(.continueButton)
+                                    
                                     showLevelUp = false
                                     showBackground = true
                                     remainingTime = 10
                                     timeRemainingShowLevelUp = 6
                                     showCompleteKilling = false
+                                    completeKilling = false
                                     bounce = false
                                     difficultyLevel += 1
+                                    
                                 } label: {
                                     Image("NextLevelButton")
                                         .resizable()
@@ -106,7 +109,7 @@ struct SingleplayerView: View {
                                 }
                                 .position(CGPoint(x: deviceType == .pad ? UIScreen.main.bounds.width/1.09 : UIScreen.main.bounds.width/1.1, y: deviceType == .pad ? UIScreen.main.bounds.height/13 : UIScreen.main.bounds.height/8.5))
                             }
-                        } else if completeKilling && !(youDiedIndicator) {
+                        } else if (completeKilling) && !(youDiedIndicator) {
                             ZStack{ }
                                 .onAppear {
                                     startCountdownCompleteKilling(remainingTime: 8)
