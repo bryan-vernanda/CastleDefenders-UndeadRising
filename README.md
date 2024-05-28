@@ -38,7 +38,7 @@ Currently available only on iPad and iPhone, as it doesn't support the interface
 ![IMG_0020](https://github.com/13ry4nV3rn4nd4/CastleDefenders-UndeadRising/assets/91310099/c1116c8d-2116-4f0c-9eef-d1a96d3e0722)
 ![IMG_0036](https://github.com/13ry4nV3rn4nd4/CastleDefenders-UndeadRising/assets/91310099/9b1f9ebb-3343-4b50-9ce9-69d862e3ff7d)
 ![IMG_0034](https://github.com/13ry4nV3rn4nd4/CastleDefenders-UndeadRising/assets/91310099/ed69e4bc-0c67-48d6-b302-8379a89b02ec)
-![IMG_0032](https://github.com/13ry4nV3rn4nd4/CastleDefenders-UndeadRising/assets/91310099/69616ca1-c6cf-41f8-9d49-24f3fc535d29)
+![IMG_0032](https://github.com/13ry4nV3rn4nd4/CastleDefenders-UndeadRising/assets/91310099/791d47e2-e712-4dc4-aaeb-3f137acac0a7)
 ![IMG_0021](https://github.com/13ry4nV3rn4nd4/CastleDefenders-UndeadRising/assets/91310099/eab92ec3-2ad3-4fa3-983b-a9c3903cc0ef)
 ![IMG_0026](https://github.com/13ry4nV3rn4nd4/CastleDefenders-UndeadRising/assets/91310099/fad85f5c-06bd-4d52-82ad-01f98d05bbcf)
 <br />
