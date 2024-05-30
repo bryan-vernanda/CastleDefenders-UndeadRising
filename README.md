@@ -54,6 +54,9 @@ Currently available only on iPad and iPhone, as it doesn't support the interface
 <br />**Multiplayer Mode:**
 <br />In multiplayer mode, the game uses a Bluetooth connection. Scan the area with your friend's iPhone or iPad to lock onto the view before starting the game. You and your friend will face unlimited waves of zombies for 2 minutes, working together to defend your castle. Currently, multiplayer mode supports only 2 players. More players are not supported at the moment due to the need for optimization in player searching. In the future, a host-player system will be implemented to allow more than 2 players. Right now, each player operates independently.
 
+## ⚠️ Disclaimer:
+The multiplayer mode of this app currently supports only two players due to the two-week time constraint for development. Occasionally, a third player may join in the middle of the battle, which is not desirable. To support more than two players, I need to create a shared AR experience using a host-guest approach, as detailed in [this ARKit documentation](https://developer.apple.com/documentation/arkit/arkit_in_ios/creating_a_multiuser_ar_experience?source=post_page-----d7cafaee3962--------------------------------). This may require additional time for exploration and implementation.
+
 <br />
 <br />If you encounter any issues or have suggestions for improvements, please let me know.
 
